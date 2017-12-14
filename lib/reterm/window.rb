@@ -1,0 +1,260 @@
+module RETerm
+  # Windows are areas rendered on screen, associated with components
+  # to be rendered in them. They specify the position to start drawing
+  # component as well as the maximum width and height. A border may be
+  # drawn around a window and a {ColorPair} associated.
+  #
+  # If Layout is added to a Window, children may subsequently be added.
+  # This should be performed via the Layout#add_child method.
+  #
+  # @example adding a layout to a window
+  #   init_reterm {
+  #     win = Window.new :rows => 50, :cols => 30
+  #     layout = Layouts::Horizontal.new
+  #     win.component = layout
+  #
+  #     child = layout.add_child :rows => 5, :cols => 10
+  #     child.class # => RETerm::Window
+  #
+  #     label = Components::Label.new :text => "Hello World!"
+  #     child.component = label
+  #
+  #     update_reterm
+  #     sleep(5)
+  #   }
+  #
+  class Window
+    include EventDispatcher
+
+    attr_accessor :rows, :cols
+    attr_accessor :x,    :y
+
+    attr_accessor :vborder
+    attr_accessor :hborder
+
+    attr_accessor :component
+
+    attr_reader :win
+
+    attr_reader :parent
+    attr_accessor :children
+
+    # Return bool indicating if this window has a component
+    # associated with it
+    def component?
+      !!@component
+    end
+
+    # Assign component to window. This will autoassign local
+    # window to component as well.
+    def component=(c)
+      c.window = self
+      c.colors = @colors if colored?
+      @component = c
+    end
+
+    # Return boolean if this window is a child of another
+    def parent?
+      !!@parent
+    end
+
+    # Instantiate Window with given args. None are required, but
+    # unless :rows, :cols, :x, or :y is specified, window will be
+    # created in it's default position.
+    #
+    # This method will generate a unique id for each window
+    # and add it to a static registery for subsequent tracking.
+    #
+    # @param [Hash] args arguments used to instantiate window
+    # @option args [Integer] :rows number of rows to assign to window
+    # @option args [Integer] :cols number of cols to assign to window
+    # @option args [Integer] :x starting x position of window
+    # @option args [Integer] :y starting y position of window
+    # @option args [Integer] :vborder vertical border char
+    # @option args [Integer] :hborder horizontal border char
+    # @option args [Component] :component component to assign to window
+    # @option args [Window] :parent parent to assign to window, if
+    #   set window will be created a a child, else it will be
+    #   independently created & tracked.
+    #
+    def initialize(args={})
+      @@registry ||= []
+      @@registry  << self
+
+      @rows = args[:rows] || (Terminal.rows - 1)
+      @cols = args[:cols] || (Terminal.cols - 1)
+
+      @x    = args[:x] || 0
+      @y    = args[:y] || 0
+
+      @vborder = args[:vborder] || 0
+      @hborder = args[:hborder] || 0
+
+      self.component = args[:component] if args.key?(:component)
+
+      if args[:parent]
+        @parent = args[:parent]
+        @win = parent.win.derwin(@rows, @cols, @y, @x)
+
+      else
+        @parent = nil
+        @win = Ncurses::WINDOW.new(@rows, @cols, @y, @x)
+      end
+
+      Ncurses::keypad(@win, true)
+
+      @children = []
+
+
+      @@wid ||= 0
+      @@wid  += 1
+
+      @window_id = @@wid
+    end
+
+    # Invoke window finalization routine by destroying it
+    # and all children
+    def finalize!
+      children.each { |c|
+        del_child c
+        cdk_scr.destroy if cdk?
+        component.finalize! if component?
+      }
+    end
+
+    # Return cdk screen (only used by CDK components)
+    def cdk_scr
+      enable_cdk!
+      @cdk_scr ||= CDK::SCREEN.new(@win)
+    end
+
+    # Return bool indicating if cdk is enabled for this window/component
+    def cdk?
+      !!@cdk_scr
+    end
+
+    # Static method returning all tracked windows
+    def self.all
+      @@registry ||= []
+      @@registry
+    end
+
+    # Static method returning top level windows
+    def self.top
+      @@registry ||= []
+      @@registry.select { |w| !w.parent? }
+    end
+
+    # Create child window, this method should not be invoked
+    # by end-user, rather it is is invoked the Layout#add_child
+    # is called.
+    def create_child(h={})
+      c = self.class.new h.merge(:parent => self)
+      c.colors = @colors if colored?
+      children << c
+      c
+    end
+
+    # Remove child window, like #add_child, this is used internally
+    # and should not be invoked by the end user
+    def del_child(child)
+      @children.delete(child)
+      @@registry.delete(child)
+      child.finalize!
+      child.win.delwin
+    end
+
+    # Clear window by removing all children and reinitializing window space
+    def clear!
+      children.each { |c|
+        del_child(c)
+      }
+
+      @children = []
+      erase
+    end
+
+    # Erase window drawing area
+    def erase
+      @win.werase
+    end
+
+    # Refresh / resynchronize window and all children
+    def refresh
+      @win.refresh
+      children.each { |c|
+        c.refresh
+      }
+    end
+
+    # Remove Border around window
+    def no_border!
+      @win.border(' '.ord, ' '.ord, ' '.ord, ' '.ord, ' '.ord, ' '.ord, ' '.ord, ' '.ord)
+    end
+
+    # Draw Border around window
+    def border!
+      @win.box(@vborder, @hborder)
+    end
+
+    # Blocking call to capture next character from window
+    def getch
+      @win.getch
+    end
+
+    # Write string at specified loc
+    def mvaddstr(*a)
+      @win.mvaddstr(*a)
+    end
+
+    # Return bool indiciating if colors are set
+    def colored?
+      !!@colors
+    end
+
+    # Set window color
+    def colors=(c)
+      @colors = c.is_a?(ColorPair) ? c : ColorPair.for(c)
+      @win.bkgd(Ncurses.COLOR_PAIR(@colors.id))
+
+      component.colors = @colors if component?
+
+      children.each { |ch|
+        ch.colors = c
+      }
+    end
+
+    # Return window dimensions as an array containing rows & cols
+    def dimensions
+      @dimensions ||=
+        begin
+          rows = []
+          cols = []
+          @win.getmaxyx(rows, cols)
+          rows = rows.first
+          cols = cols.first
+          [rows, cols]
+        end
+    end
+
+    # Return window rows
+    def rows
+      dimensions[0]
+    end
+
+    # Return window cols
+    def cols
+      dimensions[1]
+    end
+
+    # Draw component in window
+    def draw!
+      component.draw! if component?
+    end
+
+    # Activate window component
+    def activate!
+      component.activate!
+    end
+  end
+end # module RETerm
