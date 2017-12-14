@@ -1,0 +1,52 @@
+{
+  "colors" : [["green", "black", "primary"],
+              ["red",   "blue",  "secondary"]],
+
+  "window" : {
+    "colors"    : "primary",
+    "border"    : true,
+    "layout" : {
+      "type" : "Vertical",
+
+      "children" : [{
+          "rows" : 3,
+          "cols" : 20,
+
+          "component": {
+             "type" : "Label",
+             "init" : {
+               "text" : "Demo"
+             }
+          }
+
+        }, {
+          "rows" : 20,
+          "cols" : 65,
+
+          "layout" :{
+            "type" : "Horizontal",
+
+            "children" : [{
+              "rows" : 10,
+              "cols" : 10,
+              "component" : {
+                "type" : "Dial"
+              }
+
+            },{
+              "rows" : 15,
+              "cols" : 40,
+              "component" : {
+                "type" : "Entry",
+                "init" : {
+                  "title" : "Enter",
+                  "label" : "Text"
+                }
+              }
+            }]
+          }
+        }
+      ]
+    }
+  }
+}
