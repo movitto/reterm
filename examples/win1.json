@@ -1,0 +1,14 @@
+{
+  "window" : {
+    "rows"      : 10,
+    "cols"      : 50,
+    "border"    : true,
+    "component" : {
+      "type" : "Entry",
+      "init" : {
+        "title" : "<C>Demo",
+        "label" : "Enter Text: "
+      }
+    }
+  }
+}
