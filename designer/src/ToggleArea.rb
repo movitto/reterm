@@ -1,17 +1,17 @@
 # Mechanism which user specifies area to add component
 class ToggleArea
-  attr_accessor :toggled
+  attr_accessor :toggled, :designer
 
   def toggle_on
     @toggled = true
-    btn.remove(add)
+    btn.remove(btn.children[0])
     btn.add(rm)
     @designer.toggle_area = self
   end
 
   def toggle_off
     @toggled = false
-    btn.remove(rm)
+    btn.remove(btn.children[0])
     btn.add(add)
     show
     @designer.clear_toggle_area
@@ -45,6 +45,23 @@ class ToggleArea
         css_provider = Gtk::CssProvider.new
         css_provider.load(data: "button:hover {background-image: image(#FFFF00);}")
         b.style_context.add_provider(css_provider, Gtk::StyleProvider::PRIORITY_USER)
+
+        b.drag_dest_set(Gtk::DestDefaults::ALL | Gtk::DestDefaults::MOTION | Gtk::DestDefaults::HIGHLIGHT,
+                        [["reterm", :same_app, 0]],
+                        [Gdk::DragAction::COPY.to_i,
+                         Gdk::DragAction::MOVE.to_i])
+
+        ta = self
+        dragged = nil
+
+        b.signal_connect("drag-data-received") do |widget, context, x, y, selection_data, info, time|
+          dragged = selection_data.text
+        end
+
+        b.signal_connect("drag-drop") do |widget, context, x, y, time|
+          ta.designer.toggle_area = self
+          ta.designer.component_list.change_to(dragged)
+        end
 
         b
       end

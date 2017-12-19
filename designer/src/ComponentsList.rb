@@ -1,6 +1,6 @@
 # List of supported components
 class ComponentsList < VR::ListView
-  attr_accessor :designer
+  attr_accessor :designer, :selected
 
   def initialize(designer)
     @designer = designer
@@ -22,11 +22,24 @@ class ComponentsList < VR::ListView
     first = true
     selection.signal_connect("changed") {
       unless selection.selected.nil?
-        changed unless first
+        _changed(selected_component) unless first
         selection.unselect_all
         first = false
       end
     }
+
+    enable_model_drag_source(Gdk::ModifierType::BUTTON1_MASK,
+                             [["reterm", Gtk::TargetFlags::SAME_APP, 0]],
+                             Gdk::DragAction::DEFAULT | Gdk::DragAction::COPY)
+
+    lv = self
+    signal_connect("drag_data_get") do |widget, context, selection_data, info, time|
+      selection_data.set(Gdk::Selection::TYPE_STRING, lv.selected)
+    end
+  end
+
+  def selected_component
+    selection.selected[1]
   end
 
   def add_component(c)
@@ -37,34 +50,26 @@ class ComponentsList < VR::ListView
   end
 
   def self__row_activated(*args)
-    changed
+    _changed(selected_component)
+  end
+
+  def change_to(target)
+    _changed(target)
   end
 
   private
 
-  def changed
-    unless designer.has_toggled_area?
-      dialog = Gtk::MessageDialog.new(:parent  => designer.window,
-					                            :flags   => :destroy_with_parent,
-                                      :type    => :info,
-                                      :buttons => :close,
-                       :message => "Must select area to add component")
+  def _changed(selected)
+    @selected = selected
 
-      dialog.signal_connect("response") { |*args|
-        dialog.destroy
-      }
-      dialog.show
-      return
-    end
+    return unless designer.has_toggled_area?
 
-
-    c = selection.selected[1]
-    e = COMPONENTS[c.intern]
+    e = COMPONENTS[@selected.intern]
     if e.key?(:params)
-      w = ComponentParams.new(c.intern, designer)
+      w = ComponentParams.new(@selected.intern, designer)
       w.show_glade(designer)
     else
-      designer.create_component(c.intern, [])
+      designer.create_component(@selected.intern, [])
     end
   end
 

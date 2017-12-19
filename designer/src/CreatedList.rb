@@ -95,9 +95,12 @@ class CreatedList < VR::TreeView
 
     parent = parent_for(row)
     widget = widget_for(row)
+    component = component_for(row)
 
     rows_by_parent[parent].delete(row)
+    rows_by_component.delete(component)
     rows_by_widget.delete(widget)
+    params_by_widget.delete(widget)
     model.remove(row)
 
     designer.remove_component(widget)
@@ -114,6 +117,8 @@ class CreatedList < VR::TreeView
     win = {'window' => {}}
 
     top = rows_by_parent[nil].first # there should be only one element here
+    return win if top.nil?
+
     tc  = component_for(top)
     wg  = widget_for(top)
 
