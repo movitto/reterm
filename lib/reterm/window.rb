@@ -25,6 +25,9 @@ module RETerm
   #
   class Window
     include EventDispatcher
+    include LogHelpers
+
+    attr_reader :window_id
 
     attr_accessor :rows, :cols
     attr_accessor :x,    :y
@@ -48,14 +51,27 @@ module RETerm
     # Assign component to window. This will autoassign local
     # window to component as well.
     def component=(c)
-      c.window = self
-      c.colors = @colors if colored?
+      c.window   = self
+      c.colors   = @colors if colored?
       @component = c
     end
 
     # Return boolean if this window is a child of another
     def parent?
       !!@parent
+    end
+
+    # Return root window (recusively), self if parent is not set
+    def root
+      parent? ? parent.root : self
+    end
+
+    def total_x
+      @tx ||= parent? ? (parent.total_x + x) : x
+    end
+
+    def total_y
+      @ty ||= parent? ? (parent.total_y + y) : y
     end
 
     # Instantiate Window with given args. None are required, but
@@ -145,6 +161,8 @@ module RETerm
       @@registry.select { |w| !w.parent? }
     end
 
+    ###
+
     # Create child window, this method should not be invoked
     # by end-user, rather it is is invoked the Layout#add_child
     # is called.
@@ -163,6 +181,29 @@ module RETerm
       child.finalize!
       child.win.delwin
     end
+
+    # Return child containing specified screen coordiantes, else nil
+    def child_containing(x, y, z)
+      found = nil
+      children.find { |c|
+        next if found
+
+        # recursively descend into layout children
+        if c.component.kind_of?(Layout)
+          found = c.child_containing(x, y, z)
+
+        else
+          found =
+            c.total_x <= x && c.total_y <= y && # c.z >= z
+           (c.total_x + c.cols) >= x && (c.total_y + c.rows) >= y
+          found = c if found
+        end
+      }
+
+      found
+    end
+
+    ###
 
     # Clear window by removing all children and reinitializing window space
     def clear!

@@ -7,24 +7,54 @@ module RETerm
   class Layout < Component
     include NavInput
 
-    # TODO padding / margin support
-
-    attr_accessor :children
-
-    def initialize(args={})
-      @children ||= []
+    def children
+      window.children.collect { |w| w.component }
     end
 
+    def child_windows
+      window.children
+    end
+
+    def parent
+      window.parent.component
+    end
+
+    # TODO padding / margin support
+
     # Subclasses should override this method returning
-    # boolean if child window exceeds bounds of layout
-    def exceeds_bounds?(child)
+    # boolean if current layout exceeds bounds of window
+    def exceeds_bounds?
       raise "NotImplemented"
+    end
+
+    # Return layout containing component
+    # If coordinates are contained in a child in current layout
+    def layout_containing(component)
+      return self if children.include?(component)
+
+      found = nil
+      children.each { |c|
+        next if found
+
+        if c.kind_of?(Layout)
+          found = c unless c.layout_containing(component).nil?
+        end
+      }
+
+      found
+    end
+
+    # Return boolean indicating if layout contains specified child
+    def contains?(child)
+      children.any? { |c|
+        (c.kind_of?(Layout) && c.contains?(child)) || c == child
+      }
     end
 
     # Return boolean indicating if any child component
     # is activatable
     def activatable?
-      children.any? { |c| c.component.activatable? }
+      children.any? { |c| c.activatable? }
     end
 
     # Create new child window and add it to layout
@@ -35,12 +65,11 @@ module RETerm
         raise ArgumentError, "could not create child window"
       end
 
-      if exceeds_bounds?(child)
+      if exceeds_bounds?
         window.del_child(child) unless child.win.nil?
         raise ArgumentError, "child exceeds bounds"
       end
 
-      children << child
       update_reterm
       child
     end

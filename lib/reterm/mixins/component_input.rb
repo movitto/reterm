@@ -3,6 +3,9 @@ module RETerm
   # components. 'In House' components included in the project
   # may used this to standarding their usage.
   module ComponentInput
+    # TODO include / incorporate MouseInput mixin
+    # (scroll sliders/dials, click buttons, etc) ...
+
     # Key which if pressed cause the component to
     # lose focus / become deactivated
     QUIT_CONTROLS = [10, 27] # 10 = enter, 27 = ESC
@@ -13,12 +16,12 @@ module RETerm
     # Keys if pressed invoked the decrement operation
     DEC_CONTROLS  = ['-'.ord, Ncurses::KEY_DOWN, Ncurses::KEY_LEFT]
 
-    # May be overrideen in subclass, invoked when the user requests
+    # May be overridden in subclass, invoked when the user requests
     # an 'increment'
     def on_inc
     end
 
-    # May be overrideen in subclass, invoked when the user
+    # May be overridden in subclass, invoked when the user
     # requests a decrement
     def on_dec
     end

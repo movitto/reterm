@@ -2,6 +2,8 @@ module RETerm
   # A Component is a generic widget container associated with a window.
   # Subclasses each implement a specific UI artifact.
   class Component
+    include LogHelpers
+
       attr_accessor :window
 
       # This method is invoked to cleanup the component on shutdown.

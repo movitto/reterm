@@ -3,11 +3,12 @@ module RETerm
     # Layout which arrainges items vertically down screen rows
     class Vertical < Layout
       def current_rows
-        children.sum { |c| c.rows } + 1
+        child_windows.sum { |c| c.rows } + 1
       end
 
-      def exceeds_bounds?(child)
-        child.cols > window.cols || (current_rows + child.rows) > window.rows
+      def exceeds_bounds?
+        child_windows.any? { |child| child.cols > window.cols } ||
+        current_rows > window.rows
       end
 
       def add_child(h={})

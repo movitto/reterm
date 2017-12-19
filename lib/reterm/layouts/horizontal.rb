@@ -3,11 +3,12 @@ module RETerm
     # Layout which arrainges items horizontally across screen cols
     class Horizontal < Layout
       def current_cols
-        children.sum { |c| c.cols } + 1
+        child_windows.sum { |c| c.cols } + 1
       end
 
-      def exceeds_bounds?(child)
-        child.rows > window.rows || (current_cols + child.cols) > window.cols
+      def exceeds_bounds?
+        child_windows.any? { |child| child.rows > window.rows } ||
+        current_cols > window.cols
       end
 
       def add_child(h={})

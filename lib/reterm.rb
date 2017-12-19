@@ -7,9 +7,11 @@ require 'reterm/init'
 require 'reterm/color_pair'
 
 require 'reterm/mixins/event_dispatcher'
+require 'reterm/mixins/mouse_input'
 require 'reterm/mixins/component_input'
 require 'reterm/mixins/nav_input'
 require 'reterm/mixins/cdk_component'
+require 'reterm/mixins/log_helpers'
 
 require 'reterm/terminal'
 require 'reterm/window'

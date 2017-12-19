@@ -32,6 +32,9 @@ module RETerm
       Ncurses::curs_set(0)
       Ncurses::keypad(stdscr, true)
 
+      no_mouse = opts[:nomouse] || (opts.key?(:mouse) && !opts[:mouse])
+      Ncurses::mousemask(Ncurses::ALL_MOUSE_EVENTS | Ncurses::REPORT_MOUSE_POSITION, []) unless no_mouse
+
       track_resize if opts[:resize]
 
       bl.call
