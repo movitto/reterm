@@ -28,6 +28,7 @@ class Designer
     @builder["created_window"].add(@created_list,     :expand => true)
     @builder["viewer"].add(@component.btn)
     @component.show
+    wire_menus
   end  
 
   def create_component(component, params)
@@ -110,5 +111,24 @@ class Designer
      RETerm::Components.all.sort).each { |c|
       @component_list.add_component c if COMPONENTS.key?(c)
     }
+  end
+
+  def wire_menus
+    @builder["file_menu_new"].signal_connect("activate") do
+      created_list.reset!
+    end
+
+    @builder["file_menu_save"].signal_connect("activate") do
+      file = FileChooser.new(window).show
+      File.write(file, created_list.schema)
+    end
+
+    @builder["file_menu_quit"].signal_connect("activate") do
+      window.destroy
+    end
+
+    @builder["help_menu_about"].signal_connect("activate") do
+      About.new
+    end
   end
 end

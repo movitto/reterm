@@ -88,6 +88,10 @@ class CreatedList < VR::TreeView
     component_for(row_for(widget))
   end
 
+  def reset!
+    unregister(rows_by_parent[nil].first)
+  end
+
   def unregister(row)
     0.upto(row.n_children-1) { |child|
       unregister(row.nth_child(child))
