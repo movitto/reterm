@@ -103,6 +103,10 @@ module RETerm
       @x    = args[:x] || 0
       @y    = args[:y] || 0
 
+      # ... center & other const support
+      # (use cdk if enabled, else calculate ourself)
+      # https://github.com/jaromil/MuSE/blob/master/src/ncursesgui/libcdk/cdk.h#L186
+
       @vborder = args[:vborder] || 0
       @hborder = args[:hborder] || 0
 

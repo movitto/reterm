@@ -11,7 +11,7 @@ init_reterm {
 
   dialog = Components::Dialog.new :message => "Popup!"
   win.component = dialog
-  dialog = dialog.activate!
+  value = dialog.activate!
 }
 
 puts "Dialog Value: #{value}"
