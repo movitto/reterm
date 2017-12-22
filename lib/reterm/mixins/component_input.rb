@@ -16,6 +16,8 @@ module RETerm
     # Keys if pressed invoked the decrement operation
     DEC_CONTROLS  = ['-'.ord, Ncurses::KEY_DOWN, Ncurses::KEY_LEFT]
 
+    # TODO page/scroll controls
+
     # May be overridden in subclass, invoked when the user requests
     # an 'increment'
     def on_inc

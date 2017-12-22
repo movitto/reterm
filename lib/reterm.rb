@@ -16,7 +16,6 @@ require 'reterm/mixins/log_helpers'
 require 'reterm/terminal'
 require 'reterm/window'
 require 'reterm/panel'
-require 'reterm/menu'
 
 require 'reterm/components'
 require 'reterm/layouts'

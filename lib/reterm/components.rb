@@ -14,6 +14,9 @@ end
 
 require 'reterm/component'
 
+# ncurses
+require 'reterm/components/menu'
+
 # custom
 require 'reterm/components/dial'
 require 'reterm/components/rocker'
@@ -30,3 +33,4 @@ require 'reterm/components/radio'
 require 'reterm/components/slist'
 require 'reterm/components/entry'
 require 'reterm/components/matrix'
+require 'reterm/components/drop_down_menu'
