@@ -40,3 +40,7 @@ require 'reterm/components/alphalist'
 require 'reterm/components/multi_line_entry'
 require 'reterm/components/histogram'
 require 'reterm/components/scrolling_area'
+
+# additional
+require 'reterm/components/cmd_output'
+#require 'reterm/components/youtube'
