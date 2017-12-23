@@ -43,4 +43,4 @@ require 'reterm/components/scrolling_area'
 
 # additional
 require 'reterm/components/cmd_output'
-#require 'reterm/components/youtube'
+require 'reterm/components/youtube'
