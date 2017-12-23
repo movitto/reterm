@@ -9,8 +9,8 @@ init_reterm {
   win.border!
   update_reterm
 
-  list = Components::SList.new :title => "Select Item",
-                               :items => ['A', 'B', 'C']
+  list = Components::ScrollList.new :title => "Select Item",
+                                    :items => ['A', 'B', 'C']
   win.component = list
   value = list.activate!
 }

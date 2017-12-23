@@ -1,10 +1,10 @@
 module RETerm
   module Components
     # Scrolling List CDK Component
-    class SList < Component
+    class ScrollList < Component
       include CDKComponent
 
-      # Initialize the SList component
+      # Initialize the ScrollList component
       #
       # @param [Hash] args list params
       # @option args [String] :title title of list
@@ -27,6 +27,6 @@ module RETerm
                         Ncurses::A_REVERSE,                     # highlight
                         true, false)                            # box, shadow
       end
-    end # SList
+    end # ScrollList
   end # module Components
 end # module RETerm

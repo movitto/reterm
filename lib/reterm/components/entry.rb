@@ -33,6 +33,6 @@ module RETerm
                        0, 256,                    # min/max len
                        false, false)              # box, shadow
       end
-    end # Radio
+    end # Entry
   end # module Components
 end # module RETerm
