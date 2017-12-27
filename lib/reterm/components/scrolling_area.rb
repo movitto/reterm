@@ -15,6 +15,14 @@ module RETerm
         @lines  = args[:lines] || 10
       end
 
+      def requested_rows
+        10
+      end
+
+      def requested_cols
+        [@title.size, 10].min
+      end
+
       def <<(item)
         component.add item, CDK::BOTTOM
       end

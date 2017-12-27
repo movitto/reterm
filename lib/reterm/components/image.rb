@@ -16,6 +16,14 @@ module RETerm
         refresh_win
       end
 
+      def requeseted_rows
+        image.dimension.height
+      end
+
+      def requested_cols
+        image.dimension.width
+      end
+
       protected
 
       def canvas

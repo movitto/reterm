@@ -2,6 +2,8 @@ require 'ncursesw'
 require_relative './resize'
 
 module RETerm
+  SYNC_TIMEOUT = 300 # in milliseconds if enabled
+
   # Initializes the RETerm subsystem before invoking block.
   # After block is finished regardless of execution state
   # (return, exception, etc) this will cleanup the terminal
@@ -94,5 +96,24 @@ module RETerm
   # many various ready to use ncurses widgets.
   def cdk_enabled?
     !!@cdk_enabled
+  end
+
+  # Enables the input timeout and component syncronization.
+  #
+  # Used internally by components that need to periodically
+  # be updated outside of user input.
+  def activate_sync!
+    @sync_activated = true
+    Ncurses::timeout(SYNC_TIMEOUT)
+  end
+
+  def sync_enabled?
+    !!@sync_activated
+  end
+
+  def run_sync!
+    Window.all.each { |w|
+      w.sync!
+    }
   end
 end # module RETerm

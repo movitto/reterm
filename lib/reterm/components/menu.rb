@@ -3,6 +3,7 @@ module RETerm
     # NCurses Menu Component
     class Menu < Component
       include ComponentInput
+      include ItemHelpers
 
       # Initialize the Menu component
       #
@@ -12,6 +13,15 @@ module RETerm
       def initialize(args={})
         @items = args[:items] || {}
       end
+
+      def requested_rows
+        @items.size
+      end
+
+      def requested_cols
+        [max_item_size, 20].max + 2
+      end
+
 
       # Override window setter
       def window=(win)

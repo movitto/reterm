@@ -1,10 +1,11 @@
 module RETerm
   module Components
-    # Rocker component, allowing use to select one of several values
+    # Rocker component, allowing use to select one of several items
     class Rocker < Component
       include ComponentInput
+      include ItemHelpers
 
-      attr_accessor :values, :index, :labels
+      attr_accessor :items, :index, :labels
 
       # Initialize the Rocker component
       #
@@ -14,14 +15,22 @@ module RETerm
       #   win    = Window.new
       #   rocker = Rocker.new
       #   win.component = rocker
-      #   rocker.values = ['Foo', 'Bar', 'Baz']
+      #   rocker.items = ['Foo', 'Bar', 'Baz']
       #   val = rocker.activate!
       #
       def initialize(args={})
-        @values = []
+        @items = []
         @index  = nil
         @labels = true
         @index  = 0
+      end
+
+      def requested_rows
+        @items.size + 3
+      end
+
+      def requested_cols
+        max_item_size + 3
       end
 
       def draw!
@@ -35,14 +44,14 @@ module RETerm
       def activate!
         refresh_win
         handle_input
-        @values[@index]
+        @items[@index]
       end
 
       private
 
       def on_inc
         @index += 1
-        @index  = @values.size - 1 if @index == @values.size
+        @index  = @items.size - 1 if @index == @items.size
         refresh_win
       end
 
@@ -58,11 +67,11 @@ module RETerm
         post = '+' if @labels
 
         window.mvaddstr(1, 1, " |#{pre}|")
-        @values.each_with_index { |v, i|
+        @items.each_with_index { |v, i|
           sel = @index == i ? "#" : " "
-          window.mvaddstr(i+2, 1, " |" + sel + "|" + @values[i])
+          window.mvaddstr(i+2, 1, " |" + sel + "|" + @items[i])
         }
-        window.mvaddstr(@values.size+2, 1, " |#{post}|")
+        window.mvaddstr(@items.size+2, 1, " |#{post}|")
         window.refresh
         update_reterm
       end

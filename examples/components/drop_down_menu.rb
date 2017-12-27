@@ -30,7 +30,9 @@ init_reterm {
 
   win1.component = menu
   r = menu.activate!
-  e = menu.normal_exit? ? :normal : (menu.early_exit? ? :early : nil)
+  e =  menu.normal_exit? ? :normal :
+      (menu.early_exit?  ? :early :
+      (menu.escape_hit? ? :esc : ""))
 }
 
 puts "Menu choice #{r} (#{e})"

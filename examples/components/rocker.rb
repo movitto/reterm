@@ -10,7 +10,7 @@ init_reterm {
   update_reterm
 
   rocker = Components::Rocker.new
-  rocker.values = ['First', 'Second', 'Third']
+  rocker.items = ['First', 'Second', 'Third']
   win.component = rocker
   value = rocker.activate!
 }

@@ -20,6 +20,14 @@ module RETerm
         @max_len = args[:max]   || 100
       end
 
+      def requested_rows
+        5
+      end
+
+      def requested_cols
+        [@title.size, @label.size].min + 10
+      end
+
       private
 
       def _component

@@ -13,7 +13,7 @@ module RETerm
       # @option args [Array<Symbol>] :locs locations of menus
       # @option args [Symbol] :pos menu position (default top)
       def initialize(args={})
-        @menus = args[:menus] || {}
+        @menus = args[:menus] || []
         @locs  = args[:locs]  || 0.upto(size-1).collect { :left }
         @pos   = args[:pos]   || :top
       end
@@ -26,16 +26,16 @@ module RETerm
         @menus.size
       end
 
+      def requested_cols
+        total_cols + total_sp
+      end
+
+      def requested_rows
+        max_items
+      end
+
       def submenu_sizes
         @menus.collect { |m| m.size }
-      end
-
-      def early_exit?
-        component.exit_type == :EARLY_EXIT
-      end
-
-      def normal_exit?
-        component.exit_type == :NORMAL
       end
 
       def current
@@ -52,6 +52,18 @@ module RETerm
       end
 
       private
+
+      def total_cols
+        menu_list.sum { |m| m.first.size }
+      end
+
+      def total_sp
+        menu_list - 1
+      end
+
+      def max_items
+        @menus.max { |m1, m2| m1.size <=> m2.size }
+      end
 
       def _component
         locs  = @locs.collect { |l| (l == :left) ? CDK::LEFT  :
@@ -75,5 +87,7 @@ module RETerm
         c
       end
     end # class DropDownMenu
+
+    DropDown = DropDownMenu
   end # module Components
 end # module RETerm

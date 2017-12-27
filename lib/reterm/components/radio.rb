@@ -3,6 +3,7 @@ module RETerm
     # CDK Radio Component
     class Radio < Component
       include CDKComponent
+      include ItemHelpers
 
       # Initialize the Radio component
       #
@@ -13,6 +14,14 @@ module RETerm
       def initialize(args={})
         @title  = args[:title] || ""
         @items  = args[:items] || []
+      end
+
+      def requested_rows
+        @items.size
+      end
+
+      def requested_cols
+        max_item_size + 3
       end
 
       private

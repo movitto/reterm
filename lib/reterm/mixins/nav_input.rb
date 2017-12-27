@@ -172,7 +172,7 @@ module RETerm
         ch = focused.handle_input(true)
 
       else
-        ch = window.getch
+        ch = window.sync_getch
       end
 
       ch

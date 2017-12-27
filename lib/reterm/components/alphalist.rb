@@ -3,6 +3,7 @@ module RETerm
     # Alpha List CDK Component
     class AlphaList < Component
       include CDKComponent
+      include ItemHelpers
 
       # Initialize the AlphaList component
       #
@@ -15,6 +16,14 @@ module RETerm
         @title  = args[:title] || ""
         @label  = args[:label] || ""
         @items  = args[:items] || []
+      end
+
+      def requested_rows
+        [@items.size + 5, 10].min
+      end
+
+      def requested_cols
+        [@title.size, @label.size, max_item_size, 20].max + 2
       end
 
       private

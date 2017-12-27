@@ -13,6 +13,14 @@ module RETerm
         @text    = args[:text] || ""
       end
 
+      def requeseted_rows
+        1
+      end
+
+      def requested_cols
+        @text.size
+      end
+
       def draw!
         padding = " " * [0, window.cols - @text.size-2].max
         window.mvaddstr(1, 1, @text + padding)

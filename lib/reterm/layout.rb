@@ -7,12 +7,31 @@ module RETerm
   class Layout < Component
     include NavInput
 
+    # Flag indicating if layout should expand
+    # to be able to contain childen (if false
+    # error will be throw if trying to add
+    # child to layout that cannot contain it)
+    attr_accessor :expand
+
+    def expandable?
+      (!defined?(@expand) || !!@expand) &&
+      (!parent? || parent.expandable?)
+    end
+
     def children
       window.children.collect { |w| w.component }
     end
 
+    def empty?
+      window.children.empty?
+    end
+
     def child_windows
       window.children
+    end
+
+    def parent?
+      window.parent?
     end
 
     def parent
@@ -22,10 +41,31 @@ module RETerm
     # TODO padding / margin support
 
     # Subclasses should override this method returning
-    # boolean if current layout exceeds bounds of window
-    def exceeds_bounds?
+    # current rows in layout
+    def current_rows
       raise "NotImplemented"
     end
+
+    # Subclasses should override this method returning
+    # current cols in layout
+    def current_cols
+      raise "NotImplemented"
+    end
+
+    # Subclasses should overrid this method returning
+    # boolean indicating if boundries will be
+    # exceeded when child is added
+    def exceeds_bounds_with?(child)
+      raise "NotImplemented"
+    end
+
+    # Returns boolean indicating if current layout
+    # exceeds bounds of window
+    def exceeds_bounds?
+      current_cols >= window.cols ||
+      current_rows >= window.rows
+    end
+
 
     # Return layout containing component
     # If coordinates are contained in a child in current layout
@@ -59,6 +99,26 @@ module RETerm
 
     # Create new child window and add it to layout
     def add_child(h={})
+      c = nil
+
+      if h.key?(:component)
+        c = h[:component]
+        h.merge! :rows => c.requested_rows+3,
+                 :cols => c.requested_cols+3
+      end
+
+      raise ArgumentError, "must specify rows/cols" unless h.key?(:rows) &&
+                                                           h.key?(:cols)
+
+      if exceeds_bounds_with?(h)
+        if expandable?
+          expand(h)
+
+        else
+          raise ArgumentError, "child exceeds bounds"
+        end
+      end
+
       child = window.create_child(h)
 
       if child.win.nil?
@@ -70,9 +130,29 @@ module RETerm
         raise ArgumentError, "child exceeds bounds"
       end
 
+      child.component = c unless c.nil?
+
       update_reterm
       child
     end
+
+    private
+
+    def expand(h)
+      nr = current_rows + h[:rows]
+      nc = current_cols + h[:cols]
+
+      if parent?
+        if parent.exceeds_bounds_with?(h)
+          raise ArgumentError, "cannot expand parent" unless parent.expandable?
+          parent.expand(h)
+        end
+      end
+
+      window.resize(nr+1, nc+1)
+    end
+
+    public
 
     # Draw all layout children
     def draw!

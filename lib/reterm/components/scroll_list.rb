@@ -3,6 +3,8 @@ module RETerm
     # Scrolling List CDK Component
     class ScrollList < Component
       include CDKComponent
+      include EventDispatcher
+      include ItemHelpers
 
       # Initialize the ScrollList component
       #
@@ -15,10 +17,32 @@ module RETerm
         @items  = args[:items] || []
       end
 
+      def requested_rows
+        @items.size + 1
+      end
+
+      def requested_cols
+        [@title.size, max_item_size].min
+      end
+
+      def <<(item)
+        @items << item
+      end
+
+      def selected
+        @items[component.getCurrentItem]
+      end
+
+      def activate!
+        i = super
+        return nil unless normal_exit?
+        @items[i]
+      end
+
       private
 
       def _component
-        CDK::SCROLL.new(window.cdk_scr,                          # cdkscreen,
+        c = CDK::SCROLL.new(window.cdk_scr,                          # cdkscreen,
                         2, 1, CDK::RIGHT,                       # xplace, yplace, scroll pos
                         window.rows - 2,                        # widget height
                         window.cols  - 2,                       # widget width
@@ -26,6 +50,14 @@ module RETerm
                         false,                                  # prefix numbers
                         Ncurses::A_REVERSE,                     # highlight
                         true, false)                            # box, shadow
+
+        pp = lambda do |cdktype, list, scroll_list, key|
+          scroll_list.dispatch("selected")
+        end
+
+        c.setPostProcess(pp, self)
+
+        c
       end
     end # ScrollList
   end # module Components

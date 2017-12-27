@@ -12,6 +12,14 @@ module RETerm
         @title = args[:title] || ""
       end
 
+      def requested_rows
+        3
+      end
+
+      def requested_cols
+        @title.size
+      end
+
       private
 
       def callback

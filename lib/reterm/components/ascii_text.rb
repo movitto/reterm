@@ -16,6 +16,14 @@ module RETerm
         @font = args[:font]
       end
 
+      def requested_rows
+        lines.size + 1
+      end
+
+      def requested_cols
+        lines.max { |l1, l2| l1.size <=> l2.size } + 1
+      end
+
       def draw!
         refresh_win
       end
@@ -31,9 +39,13 @@ module RETerm
         end
       end
 
+      def lines
+        @lines ||= atext.split("\n")
+      end
+
       def refresh_win
         y = 1
-        atext.split("\n").each { |t|
+        lines.each { |t|
           window.mvaddstr(y, 1, t)
           y += 1
         }

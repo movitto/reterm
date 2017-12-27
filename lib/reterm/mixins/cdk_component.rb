@@ -16,6 +16,22 @@ module RETerm
       end
     end
 
+    # Return boolean indicating if escape was hit
+    def escape_hit?
+      component.exit_type == :ESCAPE_HIT
+    end
+
+    # Return boolean indicating early exit occurred
+    def early_exit?
+      component.exit_type == :EARLY_EXIT
+    end
+
+    # Return boolean indicating if user selection made / normal
+    # exit was invoked
+    def normal_exit?
+      component.exit_type == :NORMAL
+    end
+
     # Assign {ColorPair} to component
     def colors=(c)
       super
@@ -34,12 +50,27 @@ module RETerm
 
     # Invoke CDK activation routine
     def activate!
-      component.activate([])
+      r = nil
+
+      while component.exit_type == :NEVER_ACTIVATED
+        r = component.activate([])
+      end
+
+      r
     end
 
     # Return stored value of cdk component
     def value
       component.getValue
+    end
+
+    # Bind key to specified callback
+    def bind_key(key, kcb)
+      cb = lambda do |cdktype, widget, component, key|
+        kcb.call component, key
+      end
+
+      component.bind(:ENTRY, key, cb, self)
     end
   end # module CDKComponent
 end # module RETerm

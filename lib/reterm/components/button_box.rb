@@ -3,6 +3,7 @@ module RETerm
     # CDK ButtonBox Component
     class ButtonBox < Component
       include CDKComponent
+      include ButtonHelpers
 
       attr_accessor :widget
 
@@ -24,6 +25,14 @@ module RETerm
         @buttons = ["OK", "Cancel"] if @buttons.empty?
       end
 
+      def requested_rows
+        @widget.requested_rows + 6
+      end
+
+      def requested_cols
+        [@title.size, total_button_size, @widget.requested_cols].max + 3
+      end
+
       def window=(win)
         widget.window = win
         super(win)
@@ -31,7 +40,13 @@ module RETerm
 
       def activate!
         component.draw(true)
-        widget.activate!
+
+        if widget.activatable?
+          widget.activate!
+        else
+          super
+        end
+
         @buttons[component.current_button]
       end
 
@@ -50,17 +65,16 @@ module RETerm
                                Ncurses::A_REVERSE, # highligh
                                true, false) # box, shadow
 
-        widget.component.setLLchar(Ncurses::ACS_LTEE)
-        widget.component.setLRchar(Ncurses::ACS_RTEE)
         w.setULchar(Ncurses::ACS_LTEE)
         w.setURchar(Ncurses::ACS_RTEE)
 
         # bind tab key to button box
-        entry_cb = lambda do |cdktype, object, button_box, key|
-          button_box.inject(key)
+        widget_cb = lambda do |widget, key|
+          w.inject(key)
           return true
         end
-        widget.component.bind(:ENTRY, CDK::KEY_TAB, entry_cb, w)
+
+        widget.bind_key(CDK::KEY_TAB, widget_cb)
 
         w
       end

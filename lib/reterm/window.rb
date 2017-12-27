@@ -177,7 +177,7 @@ module RETerm
       c
     end
 
-    # Remove child window, like #add_child, this is used internally
+    # Remove child window, like #create_child, this is used internally
     # and should not be invoked by the end user
     def del_child(child)
       @children.delete(child)
@@ -205,6 +205,19 @@ module RETerm
       }
 
       found
+    end
+
+    ###
+
+    def resize(rows, cols)
+      r = win.resize rows, cols
+# ... verify
+      raise ArgumentError, "could not resize window" if r == -1
+
+      @rows = rows
+      @cols = cols
+
+      self
     end
 
     ###
@@ -247,6 +260,26 @@ module RETerm
       @win.getch
     end
 
+    # Normal getch unless sync enabled in which case,
+    # timeout will be checked & components synchronized
+    def sync_getch
+      return self.getch unless sync_enabled?
+
+      c = -1
+      while c == -1
+        c = self.getch
+        run_sync!
+      end
+
+      c
+    end
+
+    # Dispatch to component synchronization
+    def sync!
+      component.sync!
+      children.each { |c| c.sync! }
+    end
+
     # Write string at specified loc
     def mvaddstr(*a)
       @win.mvaddstr(*a)
@@ -260,7 +293,7 @@ module RETerm
     # Set window color
     def colors=(c)
       @colors = c.is_a?(ColorPair) ? c : ColorPair.for(c)
-      @win.bkgd(Ncurses.COLOR_PAIR(@colors.id))
+      @win.bkgd(Ncurses.COLOR_PAIR(@colors.id)) unless @win.nil?
 
       component.colors = @colors if component?
 
@@ -271,24 +304,21 @@ module RETerm
 
     # Return window dimensions as an array containing rows & cols
     def dimensions
-      @dimensions ||=
-        begin
-          rows = []
-          cols = []
-          @win.getmaxyx(rows, cols)
-          rows = rows.first
-          cols = cols.first
-          [rows, cols]
-        end
+      rows = []
+      cols = []
+      @win.getmaxyx(rows, cols)
+      rows = rows.first
+      cols = cols.first
+      [rows, cols]
     end
 
     # Return window rows
-    def rows
+    def actual_rows
       dimensions[0]
     end
 
     # Return window cols
-    def cols
+    def actual_cols
       dimensions[1]
     end
 

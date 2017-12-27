@@ -11,12 +11,5 @@ init_reterm {
 
   yt = Components::YouTube.new :url => ""
   win.component = yt
-
-  yt.start!
-
-  0.upto(50) { |i|
-    sleep 0.1
-    yt.resync
-    win.refresh
-  }
+  # ...
 }

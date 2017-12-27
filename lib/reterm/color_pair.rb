@@ -10,6 +10,18 @@ module RETerm
     attr_accessor :fg
     attr_accessor :bg
 
+    def self.builtin
+      @builtin ||=  Ncurses.constants.select { |c|
+                      c =~ /COLOR.*/
+                    }.collect { |c|
+                      c.to_s.gsub("COLOR_", "").downcase.intern
+                    }
+    end
+
+    def self.default_bg
+      -1
+    end
+
     # Redefined system RGB color. Color name should be specified
     # as well as new RGB components
     #
@@ -40,12 +52,13 @@ module RETerm
 
       # FIXME need to verify input is in valid domain
       # before conveRETermng it to symbol w/ "intern"
-      fg = fg.to_s.downcase.intern
-      bg = bg.to_s.downcase.intern
+      fg = fg.to_s.downcase.intern if fg.is_a?(String) || fg.is_a?(Symbol)
+      bg = bg.to_s.downcase.intern if bg.is_a?(String) || bg.is_a?(Symbol)
 
-      Ncurses.init_pair(@id,
-        Ncurses.const_get("COLOR_#{fg.to_s.upcase}"),
-        Ncurses.const_get("COLOR_#{bg.to_s.upcase}"))
+      fgc = fg.is_a?(Symbol) ? Ncurses.const_get("COLOR_#{fg.to_s.upcase}") : fg
+      bgc = bg.is_a?(Symbol) ? Ncurses.const_get("COLOR_#{bg.to_s.upcase}") : bg
+
+      Ncurses.init_pair(@id, fgc, bgc)
     end
 
     # Create and store a new Color Pair in a static
@@ -54,6 +67,12 @@ module RETerm
       @@registry ||= []
       @@registry  << new(fg, bg, *tags)
       @@registry.last
+    end
+
+    # Return all colors pairs
+    def self.all
+      @@registry ||= []
+      @@registry
     end
 
     # Return first Color Pair found with the given tag

@@ -11,6 +11,8 @@ require 'reterm/mixins/mouse_input'
 require 'reterm/mixins/component_input'
 require 'reterm/mixins/nav_input'
 require 'reterm/mixins/cdk_component'
+require 'reterm/mixins/item_helpers'
+require 'reterm/mixins/button_helpers'
 require 'reterm/mixins/log_helpers'
 
 require 'reterm/terminal'
@@ -21,3 +23,4 @@ require 'reterm/components'
 require 'reterm/layouts'
 
 require 'reterm/loader'
+require 'reterm/util'

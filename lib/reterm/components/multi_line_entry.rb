@@ -21,6 +21,14 @@ module RETerm
         @rows    = args[:rows]  || nil
       end
 
+      def requested_rows
+        3 + @rows
+      end
+
+      def requested_cols
+        [@title.size, @label.size + 5].min
+      end
+
       private
 
       def _component

@@ -17,6 +17,14 @@ module RETerm
         @range         = [0, 100]
       end
 
+      def requested_cols
+        [@title.size, @label.size].min + 30
+      end
+
+      def requested_rows
+        4
+      end
+
       private
 
       def _component

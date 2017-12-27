@@ -19,6 +19,14 @@ module RETerm
         @buttons = ["</B/24>OK", "</B16>Cancel"] if @buttons.empty?
       end
 
+      def requested_rows
+        5
+      end
+
+      def requested_cols
+        [message.size, total_button_size].max
+      end
+
       private
 
       def _component

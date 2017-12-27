@@ -30,6 +30,14 @@ module RETerm
         @max   = args[:max]   || 10
       end
 
+      def requested_rows
+        4
+      end
+
+      def requested_cols
+        50
+      end
+
       private
 
       def _component

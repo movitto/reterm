@@ -11,6 +11,11 @@ init_reterm {
 
   list = Components::ScrollList.new :title => "Select Item",
                                     :items => ['A', 'B', 'C']
+
+  list.handle("selected") {
+    #puts "Selected #{list.selected}"
+  }
+
   win.component = list
   value = list.activate!
 }

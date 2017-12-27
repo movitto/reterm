@@ -14,45 +14,27 @@ init_reterm {
   layout1 = Layouts::Vertical.new
   win.component = layout1
 
-  child1 = layout1.add_child :rows => 3,
-                             :cols => 20
-
   label = Components::Label.new :text => "Welcome to the UI!"
-  child1.component = label
+  layout1.add_child :component => label
 
   ###
-
-  child2 = layout1.add_child :rows => 20,
-                             :cols => 65
 
   layout2 = Layouts::Horizontal.new
-  child2.component = layout2
-
-  child3 = layout2.add_child :rows => 10,
-                             :cols => 10
+  layout1.add_child :component => layout2
 
   dial = Components::Dial.new
-  child3.component = dial
-
-  child4 = layout2.add_child :rows => 15,
-                             :cols => 40
+  layout2.add_child :component => dial
 
   entry = Components::Entry.new :title => "Enter: ", :label => "Text:"
-  child4.component = entry
+  layout2.add_child :component => entry
 
   ###
 
-  child5 = layout1.add_child :rows => 15,
-                             :cols => 65
-
   layout3 = Layouts::Horizontal.new
-  child5.component = layout3
-
-  child6 = layout3.add_child :rows => 10,
-                             :cols => 50
+  layout1.add_child :component => layout3
 
   slider = Components::HSlider.new :title => "Value: "
-  child6.component = slider
+  layout3.add_child :component => slider
 
   ###
 

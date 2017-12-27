@@ -27,6 +27,14 @@ module RETerm
         @value = initial_value
       end
 
+      def requested_rows
+        7
+      end
+
+      def requested_cols
+        7
+      end
+
       def draw!
         refresh_win
       end

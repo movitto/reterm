@@ -3,6 +3,7 @@ module RETerm
     # Select List CDK Component
     class SelectList < Component
       include CDKComponent
+      include ItemHelpers
 
       # Initialize the SelectList component
       #
@@ -15,12 +16,12 @@ module RETerm
         @items  = args[:items] || []
       end
 
-      def early_exit?
-        component.exit_type == :ESCAPE_HIT
+      def requested_rows
+        3 + @items.size
       end
 
-      def normal_exit?
-        component.exit_type == :NORMAL
+      def requested_cols
+        [@title.size, max_item_size + 4].min
       end
 
       def selected

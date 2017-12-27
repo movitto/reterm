@@ -6,6 +6,16 @@ module RETerm
       def initialize(args={})
       end
 
+      # Override this to request minimum rows
+      # for window allocation
+      def requested_rows
+      end
+
+      # Override this to request minimum cols
+      # for window allocation
+      def requested_cols
+      end
+
       # Override this method to draw component on screen
       def draw!
       end

@@ -22,6 +22,14 @@ module RETerm
         component.getCell(x, y)
       end
 
+      def requeseted_rows
+        4 + 2 * rows + 1
+      end
+
+      def requested_cols
+        2 + 2 * rows + 1
+      end
+
       private
 
       def _component
