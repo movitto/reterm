@@ -1,8 +1,73 @@
+require 'csv'
+
+NUM_LOCS = 5
+
+# parse location file
+# sample-worldcities-basic from https://simplemaps.com/data/world-cities
+CITIES_FILE = File.join(File.expand_path(File.dirname(__FILE__)),
+                           './simplemaps-worldcities-basic.csv')
+
+csv = CSV.read(CITIES_FILE, :headers => true)
+
+###
+
 require 'reterm'
 include RETerm
 
-conf = File.join(File.expand_path(File.dirname(__FILE__)), 'data.json')
+require_relative './globe'
+require_relative './weather_info'
 
 init_reterm {
-  load_reterm(File.read(conf)).activate!
+  win     = Window.new
+  layout1 = Layouts::Vertical.new
+  win.component = layout1
+
+  menus = [{"File"  => nil,
+            "Quit"  => :quit},
+           {"Help"  => nil,
+            "About" => :about}]
+
+  menu = Components::DropDown.new :menus => menus
+  layout1.add_child :component => menu
+
+  menu.handle("selected") do
+    if menu.selected == :about
+      Components::Dialog.new(:message => "TODO").show!
+
+    elsif menu.selected == :quit
+      win.quit!
+    end
+  end
+
+  layout2 = Layouts::Horizontal.new
+  layout1.add_child :component => layout2
+
+  globe = Components::Globe.new
+  layout2.add_child :component => globe
+
+  locs = Components::ScrollList.new
+  layout2.add_child :component => locs
+# ... set locs rows (fill window) & cols (remaining area)
+
+  # Render n random locations on locs/globe
+  0.upto(NUM_LOCS-1) do
+    c = csv[rand(csv.size-1)]
+    globe << [c["lng"].to_f, c["lat"].to_f]
+
+    # TODO tie locs colors to globe colors
+    locs  << (c["city"] + "," + c["province"])
+  end
+
+  locs.handle("selected") do
+    loc = locs_win.selected
+    weather_popup = Components::WeatherInfo.new :loc    => loc,
+                                                :parent => win
+
+    button_box = ButtonBox.new :widget => weather_popup,
+                               :title  => "Weather for #{loc}"
+
+    weather_popup.activate!
+  end
+
+  win.activate!
 }

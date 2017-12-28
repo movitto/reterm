@@ -784,4 +784,4 @@ GLOBES = [
 ]
 
 LONS_PER_ROT   = 360.0 / GLOBES.size
-LONS_PER_GLOBE = 105
+LONS_PER_GLOBE = 97 # rough estimate
