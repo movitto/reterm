@@ -25,7 +25,11 @@ module RETerm
       end
 
       def requested_cols
-        [@title.size, @label.size].min + 10
+        [@title.size, @label.size].min + 20
+      end
+
+      def value
+        component.getValue
       end
 
       private

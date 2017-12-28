@@ -103,17 +103,23 @@ module RETerm
   # Used internally by components that need to periodically
   # be updated outside of user input.
   def activate_sync!
-    @sync_activated = true
-    Ncurses::timeout(SYNC_TIMEOUT)
+    @@sync_activated = true
+    Window.all.each { |w|
+      w.win.timeout(SYNC_TIMEOUT)
+    }
   end
 
   def sync_enabled?
-    !!@sync_activated
+    defined?(@@sync_activated) && !!@@sync_activated
   end
 
   def run_sync!
+    return unless sync_enabled?
+
     Window.all.each { |w|
       w.sync!
     }
+
+    update_reterm
   end
 end # module RETerm

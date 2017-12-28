@@ -136,8 +136,6 @@ module RETerm
       child
     end
 
-    private
-
     def expand(h)
       nr = current_rows + h[:rows]
       nc = current_cols + h[:cols]
@@ -151,8 +149,6 @@ module RETerm
 
       window.resize(nr+1, nc+1)
     end
-
-    public
 
     # Draw all layout children
     def draw!

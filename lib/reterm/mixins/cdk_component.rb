@@ -1,6 +1,11 @@
 module RETerm
   # Mixin used by CDK based component defining cdk-specific helpers
   module CDKComponent
+    # Boolean indicating this component is a cdk component
+    def cdk?
+      true
+    end
+
     # Should be implemented in subclass to initialize component
     def _component
       raise "NotImplemented"
@@ -12,6 +17,7 @@ module RETerm
       @component ||= begin
         c = _component
         c.setBackgroundColor("</#{@colors.id}>") if colored?
+        c.timeout(SYNC_TIMEOUT) if sync_enabled? # XXX
         c
       end
     end
@@ -50,10 +56,13 @@ module RETerm
 
     # Invoke CDK activation routine
     def activate!
+      component.resetExitType
+
       r = nil
 
-      while component.exit_type == :NEVER_ACTIVATED
+      while [:EARLY_EXIT, :NEVER_ACTIVATED].include?(component.exit_type)
         r = component.activate([])
+        run_sync! if sync_enabled?
       end
 
       r

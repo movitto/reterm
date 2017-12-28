@@ -58,11 +58,11 @@ module RETerm
       end
 
       def total_sp
-        menu_list - 1
+        menu_list.size - 1
       end
 
       def max_items
-        @menus.max { |m1, m2| m1.size <=> m2.size }
+        @menus.max { |m1, m2| m1.size <=> m2.size }.size
       end
 
       def _component

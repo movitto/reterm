@@ -15,6 +15,11 @@ module RETerm
         @lines  = args[:lines] || 10
       end
 
+      # XXX swindow results in weird keyboard interactions, disable for now
+      def activatable?
+        false
+      end
+
       def requested_rows
         10
       end
@@ -30,12 +35,12 @@ module RETerm
       private
 
       def _component
-        CDK::SWINDOW.new(window.cdk_scr,   # cdkscreen,
-                         2, 1,             # xplace, yplace, scroll pos
-                         window.rows - 2,  # widget height
-                         window.cols  - 2, # widget width
-                         @title, @lines,   # title, lines
-                         true, false)      # box, shadow
+        CDK::SWINDOW.new(window.cdk_scr, # cdkscreen,
+                         0, 1,           # xplace, yplace, scroll pos
+                         window.rows,    # widget height
+                         window.cols,    # widget width
+                         @title, @lines, # title, lines
+                         true, false)    # box, shadow
       end
     end # ScrollList
   end # module Components

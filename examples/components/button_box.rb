@@ -2,6 +2,7 @@ require 'reterm'
 include RETerm
 
 value = nil
+evalue = nil
 
 init_reterm {
   win = Window.new :rows => 20,
@@ -9,7 +10,6 @@ init_reterm {
                    :x => 50, :y => 20
                    #:x    => :center,
                    #:y    => :center
-  win.border!
   update_reterm
 
   entry = Components::Entry.new :title => "<C>Enter",
@@ -19,6 +19,7 @@ init_reterm {
                                  :widget => entry
   win.component = bb
   value = bb.activate!
+  evalue = entry.value
 }
 
-puts "ButtonBox Value: #{value}"
+puts "ButtonBox Value: #{value}/#{evalue}"

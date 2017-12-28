@@ -123,6 +123,8 @@ module RETerm
 
       Ncurses::keypad(@win, true)
 
+      @win.timeout(SYNC_TIMEOUT) if @win && sync_enabled? # XXX
+
       @children = []
 
 
@@ -277,7 +279,9 @@ module RETerm
     # Dispatch to component synchronization
     def sync!
       component.sync!
-      children.each { |c| c.sync! }
+      children.each { |c|
+        c.sync!
+      }
     end
 
     # Write string at specified loc
