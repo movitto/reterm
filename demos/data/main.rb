@@ -1,6 +1,6 @@
 require 'csv'
 
-NUM_LOCS = 5
+NUM_LOCS = 10
 
 # parse location file
 # sample-worldcities-basic from https://simplemaps.com/data/world-cities
@@ -53,27 +53,33 @@ init_reterm {
   layout2.add_child :component => globe
 
   locs = Components::ScrollList.new
-  layout2.add_child :component => locs
- # ... set locs rows (fill window) & cols (remaining area)
+  layout2.add_child :component => locs,
+                    :expand    => true
+
+  locs << ""
+# ... set locs rows (fill window) & cols (remaining area)
 
   # Render n random locations on locs/globe
   0.upto(NUM_LOCS-1) do
     c = csv[rand(csv.size-1)]
-    globe << [c["lng"].to_f, c["lat"].to_f]
+    mark = [c["lng"].to_f, c["lat"].to_f]
+    globe << mark
 
-    # TODO tie locs colors to globe colors
-    locs  << (c["city"] + "," + c["province"])
+    color = globe.color_for(mark)
+    loc = "</#{color.id}>" + c["city"].to_s + "," + c["province"].to_s
+    locs << loc
   end
 
-  locs.handle("selected") do
-    loc = locs_win.selected
-    weather_popup = Components::WeatherInfo.new :loc    => loc,
-                                                :parent => win
+  locs.handle(:deactivated) do
+    loc = locs.selected
+# ...
+    #weather_popup = Components::WeatherInfo.new :loc    => loc,
+    #                                            :parent => win
 
-    button_box = ButtonBox.new :widget => weather_popup,
-                               :title  => "Weather for #{loc}"
+    #button_box = Components::ButtonBox.new :widget => weather_popup,
+    #                                       :title  => "Weather for #{loc}"
 
-    weather_popup.activate!
+    #weather_popup.activate!
   end
 
   win.activate!

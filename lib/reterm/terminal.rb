@@ -24,6 +24,10 @@ module RETerm
       dimensions[0]
     end
 
+    def self.contains?(r, c)
+      r < rows && c < cols
+    end
+
     def self.resize!
       Window.top.each { |w|
         w.dispatch :resize

@@ -22,12 +22,12 @@ module RETerm
         @colors  = {}
         @symbols = {}
 
-        @current_color  = 0
-        @current_symbol = 0
+        @current_color  = -1
+        @current_symbol = -1
       end
 
       def requested_rows
-        100
+        30
       end
 
       def requested_cols
@@ -50,36 +50,36 @@ module RETerm
       end
 
       def <<(mark)
-        raise ArgumentError,
-              "insufficient colors/symbols" unless SYMBOLS.size            > (@marked.size + 1) &&
-                                                   ColorPair.builtin.size  > (@marked.size + 1)
-
         @marked << mark
-
         self
       end
 
-      private
-
       def color_for(mark)
         return @colors[mark] if @colors.key?(mark)
-
-        @colors[mark]   = ColorPair.register(ColorPair.builtin[@current_color],
-                                             ColorPair.default_bg)
-        @current_color += 1
-        @current_color  = 0 if @current_color >= ColorPair.builtin.size
-
-        @colors[mark]
+        @colors[mark] = next_color
       end
 
       def symbol_for(mark)
         return @symbols[mark] if @symbols.key?(mark)
+        @symbols[mark] = next_symbol
+      end
 
-        @symbols[mark]   = SYMBOLS[@current_symbol]
+      private
+
+      def next_color
+        choices = ColorPair.builtin - [:black, :white]
+
+        @current_color += 1
+        @current_color  = 0 if @current_color >= choices.size
+
+        ColorPair.register(choices[@current_color],
+                           ColorPair.default_bg)
+      end
+
+      def next_symbol
         @current_symbol += 1
         @current_symbol  = 0 if @current_symbol >= SYMBOLS.size
-
-        @symbols[mark]
+        SYMBOLS[@current_symbol]
       end
 
       def refresh_win

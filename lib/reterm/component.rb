@@ -57,6 +57,11 @@ module RETerm
         true
       end
 
+      # Return extra padding to be given to component
+      def extra_padding
+        (activatable? && highlight_focus?) ? 3 : 0
+      end
+
       # Method to periodically synchronize component if needed
       def sync!
       end

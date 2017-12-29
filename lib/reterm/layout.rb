@@ -110,12 +110,8 @@ module RETerm
       if h.key?(:component)
         c = h[:component]
 
-        # allocate extra space for focus
-        # highlight effects if needed
-        extra = (c.activatable? && c.highlight_focus?) ? 3 : 0
-
-        h.merge! :rows => c.requested_rows+extra,
-                 :cols => c.requested_cols+extra
+        h.merge! :rows => c.requested_rows + c.extra_padding,
+                 :cols => c.requested_cols + c.extra_padding
       end
 
       raise ArgumentError, "must specify rows/cols" unless h.key?(:rows) &&
@@ -151,13 +147,17 @@ module RETerm
       nr = current_rows + h[:rows]
       nc = current_cols + h[:cols]
 
+      # verify parent can contain expanded area and is expandable
       if parent?
         if parent.exceeds_bounds_with?(h)
           raise ArgumentError, "cannot expand parent" unless parent.expandable?
+
+          # expand parent
           parent.expand(h)
         end
       end
 
+      # perform actual window expansion
       window.resize(nr+1, nc+1)
     end
 

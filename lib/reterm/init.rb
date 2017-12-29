@@ -50,7 +50,7 @@ module RETerm
       Ncurses.curs_set(1)
       Window.all.each { |w| w.finalize! }
       CDK::SCREEN.endCDK if cdk_enabled?
-      Ncurses.endwin()
+      Ncurses.endwin
       #`reset -Q` # XXX only way to guarantee a full reset (see above)
     end
   end

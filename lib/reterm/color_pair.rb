@@ -12,14 +12,14 @@ module RETerm
 
     def self.builtin
       @builtin ||=  Ncurses.constants.select { |c|
-                      c =~ /COLOR.*/
+                      c =~ /^COLOR.*/
                     }.collect { |c|
                       c.to_s.gsub("COLOR_", "").downcase.intern
                     }
     end
 
     def self.default_bg
-      -1
+      Ncurses::WINDOW.new(1, 1, 1, 1).getbkgd
     end
 
     # Redefined system RGB color. Color name should be specified

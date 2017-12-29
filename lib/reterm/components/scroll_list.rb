@@ -21,11 +21,18 @@ module RETerm
       end
 
       def requested_cols
-        [@title.size, max_item_size].min
+        [@title.size, max_item_size].max + 2
       end
 
       def <<(item)
         @items << item
+
+        if window.expand? &&
+           (window.rows < (requested_rows + extra_padding) ||
+            window.cols < (requested_cols + extra_padding))
+          window.request_expansion requested_rows + extra_padding,
+                                   requested_cols + extra_padding
+        end
       end
 
       def selected
@@ -41,17 +48,18 @@ module RETerm
       private
 
       def _component
-        c = CDK::SCROLL.new(window.cdk_scr,                          # cdkscreen,
-                        2, 1, CDK::RIGHT,                       # xplace, yplace, scroll pos
-                        window.rows - 2,                        # widget height
-                        window.cols  - 2,                       # widget width
-                        @title, @items, @items.size,            # title and items
-                        false,                                  # prefix numbers
-                        Ncurses::A_REVERSE,                     # highlight
-                        true, false)                            # box, shadow
+        c = CDK::SCROLL.new(window.cdk_scr,          # cdkscreen,
+                        CDK::CENTER, CDK::CENTER,    # xplace, yplace, 
+                        CDK::RIGHT,                  # scroll pos
+                        window.rows-2,               # widget height
+                        window.cols-3,               # widget width
+                        @title, @items, @items.size, # title and items
+                        false,                       # prefix numbers
+                        Ncurses::A_REVERSE,          # highlight
+                        true, false)                 # box, shadow
 
         pp = lambda do |cdktype, list, scroll_list, key|
-          scroll_list.dispatch("selected")
+          scroll_list.dispatch(:selected)
         end
 
         c.setPostProcess(pp, self)

@@ -92,6 +92,11 @@ module RETerm
     # @option args [Window] :parent parent to assign to window, if
     #   set window will be created a a child, else it will be
     #   independently created & tracked.
+    # @options args [Boolean] :expand bool indicating
+    #   if window can be expanded on request
+    # @options args [Boolean] :must_expand bool indicating
+    #   if window must be expanded when requested. Failure
+    #   to expand will result in an error
     #
     def initialize(args={})
       @@registry ||= []
@@ -99,6 +104,9 @@ module RETerm
 
       @rows = args[:rows] || (Terminal.rows - 1)
       @cols = args[:cols] || (Terminal.cols - 1)
+
+      raise ArgumentError,
+        "terminal too small" unless Terminal.contains?(@rows, @cols)
 
       @x    = args[:x] || 0
       @y    = args[:y] || 0
@@ -127,6 +135,8 @@ module RETerm
 
       @children = []
 
+      @expand      = !!args[:expand]
+      @must_expand = !!args[:must_expand]
 
       @@wid ||= 0
       @@wid  += 1
@@ -144,6 +154,46 @@ module RETerm
       }
     end
 
+    ###
+
+    def expand?
+      !!@expand
+    end
+
+    def must_expand?
+      !!@must_expand
+    end
+
+    def request_expansion(r, c)
+      h = {:rows => r,
+           :cols => c,
+           :x    => x,
+           :y    => y}
+
+      if parent?
+        if parent.component.exceeds_bounds_with?(h)
+          if parent.component.expandable?
+            parent.component.expand(h)
+
+          else
+            raise ArgumentError, "cannot expand" if must_expand?
+            return false
+          end
+        end
+
+      else
+        unless Terminal.contains?(h)
+          raise ArgumentError, "terminal too small" if must_expand?
+          return false
+        end
+      end
+
+      resize(r, c)
+      true
+    end
+
+    ###
+
     # Return cdk screen (only used by CDK components)
     def cdk_scr
       enable_cdk!
@@ -154,6 +204,8 @@ module RETerm
     def cdk?
       !!@cdk_scr
     end
+
+    ###
 
     # Static method returning all tracked windows
     def self.all

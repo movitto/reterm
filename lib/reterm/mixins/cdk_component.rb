@@ -63,7 +63,7 @@ module RETerm
 
       r = nil
 
-      while [:EARLY_EXIT, :NEVER_ACTIVATED].include?(component.exit_type) &&
+      while [:EARLY_EXIT, :NEVER_ACTIVATED, :TIMEOUT].include?(component.exit_type) &&
             !shutdown?
         r = component.activate([])
         run_sync! if sync_enabled?
