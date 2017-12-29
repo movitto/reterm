@@ -23,6 +23,7 @@ module RETerm
     end
 
     def empty?
+      return true if window.nil?
       window.children.empty?
     end
 
@@ -94,7 +95,12 @@ module RETerm
     # Return boolean indicating if any child component
     # is activatable
     def activatable?
+      return false if empty?
       children.any? { |c| c.activatable? }
+    end
+
+    def highlight_focus?
+      false
     end
 
     # Create new child window and add it to layout
@@ -103,8 +109,13 @@ module RETerm
 
       if h.key?(:component)
         c = h[:component]
-        h.merge! :rows => c.requested_rows+3,
-                 :cols => c.requested_cols+3
+
+        # allocate extra space for focus
+        # highlight effects if needed
+        extra = (c.activatable? && c.highlight_focus?) ? 3 : 0
+
+        h.merge! :rows => c.requested_rows+extra,
+                 :cols => c.requested_cols+extra
       end
 
       raise ArgumentError, "must specify rows/cols" unless h.key?(:rows) &&

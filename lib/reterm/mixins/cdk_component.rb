@@ -1,6 +1,8 @@
 module RETerm
   # Mixin used by CDK based component defining cdk-specific helpers
   module CDKComponent
+    include EventDispatcher
+
     # Boolean indicating this component is a cdk component
     def cdk?
       true
@@ -56,15 +58,18 @@ module RETerm
 
     # Invoke CDK activation routine
     def activate!
+      dispatch :activated
       component.resetExitType
 
       r = nil
 
-      while [:EARLY_EXIT, :NEVER_ACTIVATED].include?(component.exit_type)
+      while [:EARLY_EXIT, :NEVER_ACTIVATED].include?(component.exit_type) &&
+            !shutdown?
         r = component.activate([])
         run_sync! if sync_enabled?
       end
 
+      dispatch :deactivated
       r
     end
 

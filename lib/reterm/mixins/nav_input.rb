@@ -49,7 +49,7 @@ module RETerm
 
       ch = handle_focused unless nav_select
 
-      while(!QUIT_CONTROLS.include?(ch))
+      while(!QUIT_CONTROLS.include?(ch) && !shutdown?)
         if self.nav_select 
           if self.contains?(self.nav_select)
             ns = self.nav_select
@@ -158,7 +158,7 @@ module RETerm
     end
 
     def update_focus
-      focused.window.border! unless focused.kind_of?(Layout)
+      focused.window.border! unless !focused.highlight_focus?
       update_reterm
       window.root.draw!
     end

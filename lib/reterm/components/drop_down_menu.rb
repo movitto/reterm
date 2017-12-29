@@ -2,7 +2,6 @@ module RETerm
   module Components
     # CDK Drop Down Menu Component
     class DropDownMenu < Component
-      include EventDispatcher
       include CDKComponent
 
       # Initialize the Menu component
@@ -27,18 +26,18 @@ module RETerm
       end
 
       def requested_cols
-        total_cols + total_sp
+        total_cols + total_sp + 3
       end
 
       def requested_rows
-        max_items
+        max_items + 2
       end
 
       def submenu_sizes
         @menus.collect { |m| m.size }
       end
 
-      def current
+      def selected
         @menus[component.current_title][@menus[component.current_title].keys[component.current_subtitle+1]]
       end
 
@@ -49,6 +48,10 @@ module RETerm
         i = r % 100
 
         @menus[m][@menus[m].keys[i+1]]
+      end
+
+      def highlight_focus?
+        false
       end
 
       private

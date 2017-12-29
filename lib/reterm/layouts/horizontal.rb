@@ -1,6 +1,6 @@
 module RETerm
   module Layouts
-    # Layout which arrainges items horizontally across screen cols
+    # Layout which arainges items horizontally across screen cols
     class Horizontal < Layout
       def current_rows
         return 1 if empty?

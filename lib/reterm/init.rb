@@ -4,6 +4,8 @@ require_relative './resize'
 module RETerm
   SYNC_TIMEOUT = 300 # in milliseconds if enabled
 
+  ###############################
+
   # Initializes the RETerm subsystem before invoking block.
   # After block is finished regardless of execution state
   # (return, exception, etc) this will cleanup the terminal
@@ -19,6 +21,8 @@ module RETerm
   #   }
   #
   def init_reterm(opts={}, &bl)
+    @@shutdown = false
+
     begin
       Terminal.load # XXX: not sure why but loading terminal
                     #      info after changing terminal settings via
@@ -75,6 +79,8 @@ module RETerm
   # is discouraged to maintain portability
   NC = Ncurses
 
+  ###############################
+
   # Enable the CDK subsystem. Used by CDKbased components
   #
   # @see #cdk_enabled?
@@ -98,6 +104,8 @@ module RETerm
     !!@cdk_enabled
   end
 
+  ###############################
+
   # Enables the input timeout and component syncronization.
   #
   # Used internally by components that need to periodically
@@ -109,10 +117,13 @@ module RETerm
     }
   end
 
+  # Boonean indicating if component syncronization is
+  # enabled
   def sync_enabled?
     defined?(@@sync_activated) && !!@@sync_activated
   end
 
+  # Run the sync process, used internally
   def run_sync!
     return unless sync_enabled?
 
@@ -121,5 +132,17 @@ module RETerm
     }
 
     update_reterm
+  end
+
+  ###############################
+
+  # Use to halt all operation and cleanup.
+  def shutdown!
+    @@shutdown = true
+  end
+
+  # Boolean indicating if app in being halted
+  def shutdown?
+    !!@@shutdown
   end
 end # module RETerm

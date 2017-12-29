@@ -19,7 +19,7 @@ require_relative './weather_info'
 
 init_reterm {
   win     = Window.new
-  layout1 = Layouts::Vertical.new
+  layout1 = Layouts::Grid.new
   win.component = layout1
 
   menus = [{"File"  => nil,
@@ -28,26 +28,33 @@ init_reterm {
             "About" => :about}]
 
   menu = Components::DropDown.new :menus => menus
-  layout1.add_child :component => menu
+  layout1.add_child :component => menu,
+                    :x => 1, :y => 1
 
-  menu.handle("selected") do
+  menu.handle(:deactivated) do
+    next unless menu.normal_exit?
+
     if menu.selected == :about
-      Components::Dialog.new(:message => "TODO").show!
+      dwin   = Window.new
+      dialog = Components::Dialog.new(:message => "TODO")
+      dwin.component = dialog
+      dialog.activate!
 
     elsif menu.selected == :quit
-      win.quit!
+      shutdown!
     end
   end
 
   layout2 = Layouts::Horizontal.new
-  layout1.add_child :component => layout2
+  layout1.add_child :component => layout2,
+                    :x => 1, :y => 3
 
   globe = Components::Globe.new
   layout2.add_child :component => globe
 
   locs = Components::ScrollList.new
   layout2.add_child :component => locs
-# ... set locs rows (fill window) & cols (remaining area)
+ # ... set locs rows (fill window) & cols (remaining area)
 
   # Render n random locations on locs/globe
   0.upto(NUM_LOCS-1) do

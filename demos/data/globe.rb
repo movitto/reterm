@@ -91,9 +91,9 @@ module RETerm
         rad   = deg * Math::PI/180
         globe = GLOBES[angle]
 
-        window.mvaddstr 0, 0, "@ #{deg-LONS_PER_GLOBE/2} > #{deg} (#{rad.round(2)}) > #{deg+LONS_PER_GLOBE/2}"
+        #window.mvaddstr 0, 0, "@ #{deg-LONS_PER_GLOBE/2} > #{deg} (#{rad.round(2)}) > #{deg+LONS_PER_GLOBE/2}"
         globe.each_with_index { |l, li|
-          window.mvaddstr li+1, 0, l
+          window.mvaddstr li, 0, l
         }
 
         refresh_marks(globe, deg)

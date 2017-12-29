@@ -268,7 +268,7 @@ module RETerm
       return self.getch unless sync_enabled?
 
       c = -1
-      while c == -1
+      while c == -1 && !shutdown?
         c = self.getch
         run_sync!
       end

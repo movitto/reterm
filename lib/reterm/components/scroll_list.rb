@@ -3,7 +3,6 @@ module RETerm
     # Scrolling List CDK Component
     class ScrollList < Component
       include CDKComponent
-      include EventDispatcher
       include ItemHelpers
 
       # Initialize the ScrollList component

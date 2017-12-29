@@ -1,6 +1,6 @@
 module RETerm
   module Layouts
-    # Layout which arrainges items vertically down screen rows
+    # Layout which arainges items vertically down screen rows
     class Vertical < Layout
       def current_rows
         return 1 if empty?
@@ -9,7 +9,7 @@ module RETerm
 
       def current_cols
         return 1 if empty?
-        child_windows.max { |w1, w2| w1.rows <=> w2.rows }.rows
+        child_windows.max { |w1, w2| w1.cols <=> w2.cols }.cols
       end
 
       def exceeds_bounds_with?(child)
@@ -29,6 +29,6 @@ module RETerm
         # set x/y to next appropriate location
         super(h.merge(:y => current_rows, :x => 1))
       end
-    end # class Horizontal
+    end # class Vertical
   end # module Layouts
 end # module RETerm

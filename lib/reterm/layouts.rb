@@ -14,3 +14,4 @@ end
 require 'reterm/layout'
 require 'reterm/layouts/horizontal'
 require 'reterm/layouts/vertical'
+require 'reterm/layouts/grid'

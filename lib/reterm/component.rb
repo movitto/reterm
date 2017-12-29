@@ -51,6 +51,12 @@ module RETerm
         raise RuntimeError, "should not be activated"
       end
 
+      # Return boolean indicating if this component should
+      # be highlighted on focus
+      def highlight_focus?
+        true
+      end
+
       # Method to periodically synchronize component if needed
       def sync!
       end
