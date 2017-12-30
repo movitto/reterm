@@ -97,6 +97,8 @@ module RETerm
     # @options args [Boolean] :must_expand bool indicating
     #   if window must be expanded when requested. Failure
     #   to expand will result in an error
+    # @options args [Boolean] :fill bool indicating
+    #   if window should fill remaining space
     #
     def initialize(args={})
       @@registry ||= []
@@ -137,6 +139,8 @@ module RETerm
 
       @expand      = !!args[:expand]
       @must_expand = !!args[:must_expand]
+
+      @fill        = !!args[:fill]
 
       @@wid ||= 0
       @@wid  += 1
@@ -265,7 +269,6 @@ module RETerm
 
     def resize(rows, cols)
       r = win.resize rows, cols
-# ... verify
       raise ArgumentError, "could not resize window" if r == -1
 
       @rows = rows

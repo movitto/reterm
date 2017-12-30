@@ -54,10 +54,10 @@ init_reterm {
 
   locs = Components::ScrollList.new
   layout2.add_child :component => locs,
-                    :expand    => true
+                    :expand    => true,
+                    :fill      => true
 
   locs << ""
-# ... set locs rows (fill window) & cols (remaining area)
 
   # Render n random locations on locs/globe
   0.upto(NUM_LOCS-1) do
@@ -72,7 +72,7 @@ init_reterm {
 
   locs.handle(:deactivated) do
     loc = locs.selected
-# ...
+ # ...
     #weather_popup = Components::WeatherInfo.new :loc    => loc,
     #                                            :parent => win
 

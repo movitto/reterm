@@ -114,19 +114,38 @@ module RETerm
                  :cols => c.requested_cols + c.extra_padding
       end
 
+      raise ArgumentError, "must specify x/y" unless h.key?(:x) &&
+                                                     h.key?(:y)
+
       raise ArgumentError, "must specify rows/cols" unless h.key?(:rows) &&
                                                            h.key?(:cols)
 
+      if h[:fill]
+        p = parent? ? parent.window : Terminal
+        if (h[:y] + h[:rows]) < (p.rows-2)
+          h[:rows] = p.rows-2 - h[:y]
+        end
+
+        if (h[:x] + h[:cols]) < (p.cols-2)
+          h[:cols] = p.cols-2 - h[:x]
+        end
+      end
+
       if exceeds_bounds_with?(h)
-        if expandable?
+        if expandable? # ... && can_expand_to?(h)
           expand(h)
 
         else
           raise ArgumentError, "child exceeds bounds"
+
         end
       end
 
       child = window.create_child(h)
+
+      # TODO need to reverse expansion if operation fails at any
+      # point on, or verify expandable before create_child but
+      # do not expand until after
 
       if child.win.nil?
         raise ArgumentError, "could not create child window"
@@ -159,6 +178,8 @@ module RETerm
 
       # perform actual window expansion
       window.resize(nr+1, nc+1)
+
+      # FIXME need to expand children who are marked as 'fill'
     end
 
     # Draw all layout children

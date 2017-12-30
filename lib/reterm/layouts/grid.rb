@@ -28,12 +28,6 @@ module RETerm
         (x + cols) >= window.cols      ||
         (y + rows) >= window.rows
       end
-
-      def add_child(h={})
-        raise ArgumentError, "must specify x/y" unless h.key?(:x) &&
-                                                       h.key?(:y)
-        super
-      end
     end # class Grid
   end # module Layouts
 end # module RETerm

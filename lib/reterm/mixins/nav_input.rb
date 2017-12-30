@@ -122,6 +122,10 @@ module RETerm
               # if current window does not contain child,
               # set target component and return
               if child.window.parent != self.window
+                # FIXME need to also handle case which child is not directly
+                # underneath self, but rather a descendent, underneath a component
+                # under self
+
                 focused.window.no_border!
                 parent.nav_select = child
                 return nil

@@ -49,7 +49,7 @@ module RETerm
 
       def _component
         c = CDK::SCROLL.new(window.cdk_scr,          # cdkscreen,
-                        CDK::CENTER, CDK::CENTER,    # xplace, yplace, 
+                        CDK::CENTER, CDK::CENTER,    # xplace, yplace,
                         CDK::RIGHT,                  # scroll pos
                         window.rows-2,               # widget height
                         window.cols-3,               # widget width
