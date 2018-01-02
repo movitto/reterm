@@ -13,18 +13,17 @@ module RETerm
         @text    = args[:text] || ""
       end
 
-      def requeseted_rows
-        1
+      def requested_rows
+        2
       end
 
       def requested_cols
-        @text.size
+        @text.size + 1
       end
 
       def draw!
         padding = " " * [0, window.cols - @text.size-2].max
-        window.mvaddstr(1, 1, @text + padding)
-        update_reterm
+        window.mvaddstr(0, 0, @text + padding)
       end
     end # Label
   end # module Components

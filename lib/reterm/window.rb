@@ -79,7 +79,7 @@ module RETerm
     # created in it's default position.
     #
     # This method will generate a unique id for each window
-    # and add it to a static registery for subsequent tracking.
+    # and add it to a static registry for subsequent tracking.
     #
     # @param [Hash] args arguments used to instantiate window
     # @option args [Integer] :rows number of rows to assign to window
@@ -104,30 +104,38 @@ module RETerm
       @@registry ||= []
       @@registry  << self
 
-      @rows = args[:rows] || (Terminal.rows - 1)
-      @cols = args[:cols] || (Terminal.cols - 1)
-
-      raise ArgumentError,
-        "terminal too small" unless Terminal.contains?(@rows, @cols)
-
       @x    = args[:x] || 0
       @y    = args[:y] || 0
-
-      # ... center & other const support
-      # (use cdk if enabled, else calculate ourself)
-      # https://github.com/jaromil/MuSE/blob/master/src/ncursesgui/libcdk/cdk.h#L186
 
       @vborder = args[:vborder] || 0
       @hborder = args[:hborder] || 0
 
       self.component = args[:component] if args.key?(:component)
 
+      @rows = args[:rows] ||
+              (component? ?
+               (@component.requested_rows + @component.extra_padding + 1) :
+               (Terminal.rows - 1))
+
+      @cols = args[:cols] ||
+              (component? ?
+               (@component.requested_cols + @component.extra_padding + 1) :
+               (Terminal.cols - 1))
+
       if args[:parent]
         @parent = args[:parent]
+
+        @rows, @cols = *Window.adjust_proportional(@parent, @rows, @cols)
+        @x,    @y    = *Window.align(@parent, @x, @y, @rows, @cols)
+
         @win = parent.win.derwin(@rows, @cols, @y, @x)
 
       else
         @parent = nil
+
+        @rows, @cols = *Window.adjust_proportional(Terminal, @rows, @cols)
+        @x,    @y    = *Window.align(Terminal, @x, @y, @rows, @cols)
+
         @win = Ncurses::WINDOW.new(@rows, @cols, @y, @x)
       end
 
@@ -148,14 +156,50 @@ module RETerm
       @window_id = @@wid
     end
 
+    ###
+
+    # Adjusts rows/cols in a context dependent manner
+    def self.adjust_proportional(parent, rows, cols)
+      nr = rows
+      nc = cols
+
+      nr = parent.rows * nr if rows < 1
+      nc = parent.cols * nc if cols < 1
+
+      return nr, nc
+    end
+
+    # Adjusts x/y in context dependent manner
+    def self.align(parent, x, y, rows, cols)
+      nx = x
+      ny = y
+
+      nx = 0 if x == :left
+      ny = 0 if y == :top
+
+      nx = parent.cols - cols if x == :right
+      ny = parent.rows - rows if y == :bottom
+
+      nx = parent.cols / 2 - cols / 2 if x == :center
+      ny = parent.rows / 2 - rows / 2 if y == :center
+
+      return nx, ny
+    end
+
+    ###
+
     # Invoke window finalization routine by destroying it
     # and all children
     def finalize!
+      erase
+      @@registry.delete(self)
+
       children.each { |c|
         del_child c
-        cdk_scr.destroy if cdk?
-        component.finalize! if component?
       }
+
+      cdk_scr.destroy if cdk?
+      component.finalize! if component?
     end
 
     ###
@@ -291,7 +335,13 @@ module RETerm
 
     # Erase window drawing area
     def erase
-      @win.werase
+      children.each { |c|
+        c.erase
+      }
+
+      @win.werase if @win
+
+      component.component.erase if cdk?
     end
 
     # Refresh / resynchronize window and all children
@@ -300,6 +350,17 @@ module RETerm
       children.each { |c|
         c.refresh
       }
+
+      component.component.screen.refresh if cdk?
+    end
+
+    def noutrefresh
+      @win.noutrefresh
+      children.each { |c|
+        c.noutrefresh
+      }
+
+      component.component.screen.noutrefresh if cdk?
     end
 
     # Remove Border around window

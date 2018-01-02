@@ -120,6 +120,10 @@ module RETerm
       raise ArgumentError, "must specify rows/cols" unless h.key?(:rows) &&
                                                            h.key?(:cols)
 
+      # TODO should proporational percentage be of remaining area?
+      h[:rows], h[:cols] = *Window.adjust_proportional(window, h[:rows], h[:cols])
+      h[:x],    h[:y]    = *Window.align(window, h[:x], h[:y], h[:rows], h[:cols])
+
       if h[:fill]
         p = parent? ? parent.window : Terminal
         if (h[:y] + h[:rows]) < (p.rows-2)

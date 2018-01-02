@@ -39,6 +39,9 @@ init_reterm {
       dialog = Components::Dialog.new(:message => "TODO")
       dwin.component = dialog
       dialog.activate!
+      dialog.window.erase
+      dialog.window.finalize!
+      update_reterm(true)
 
     elsif menu.selected == :quit
       shutdown!
@@ -71,15 +74,32 @@ init_reterm {
   end
 
   locs.handle(:deactivated) do
-    loc = locs.selected
- # ...
-    #weather_popup = Components::WeatherInfo.new :loc    => loc,
-    #                                            :parent => win
+    unless locs.normal_exit?
+      locs.component.setPosition(0)
+      next
+    end
 
-    #button_box = Components::ButtonBox.new :widget => weather_popup,
-    #                                       :title  => "Weather for #{loc}"
+    loc = locs.selected.gsub(/<.*>/, '')
+    weather_popup = Components::WeatherInfo.new :loc    => loc,
+                                                :parent => win
 
-    #weather_popup.activate!
+    button_box = Components::ButtonBox.new :widget => weather_popup,
+                                           :title  => "Weather for #{loc}"
+    bbw = Window.new :rows => 0.9, :cols => 0.9,
+                     :x => :center, :y => :center
+    bbw.component = button_box
+
+    button_box.activate!
+
+    # FIXME optimize cleanup process (& for dialog above)
+    weather_popup.erase
+    bbw.erase
+    bbw.finalize!
+    update_reterm(true)
+
+    # reactivate locs
+    # FIXME we're losing focus here
+    locs.activate!
   end
 
   win.activate!

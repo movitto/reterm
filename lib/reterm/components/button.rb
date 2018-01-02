@@ -24,15 +24,16 @@ module RETerm
 
       def callback
         proc { |b|
-          puts "Clicked"
+          dispatch :clicked
         }
       end
 
       def _component
-        CDK::BUTTON.new(window.cdk_scr,  # cdk screen
-                        2, 1, @title,    # x, y, title
-                        callback,        # click callback
-                        false, false)    # box, shadow
+        CDK::BUTTON.new(window.cdk_scr,           # cdk screen
+                        CDK::CENTER, CDK::CENTER, # x, y
+                        @title,                   # title
+                        callback,                 # click callback
+                        false, false)             # box, shadow
       end
     end # Button
   end # module Components

@@ -67,8 +67,16 @@ module RETerm
   #     win.getch   # wait for input
   #   }
   #
-  def update_reterm
-    Window.top.each { |w| w.refresh }
+  def update_reterm(force_refresh=false)
+    if force_refresh
+      Window.top.each { |w|
+        w.erase
+        w.draw!
+      }
+    else
+      Window.top.each { |w| w.noutrefresh }
+    end
+
     Ncurses::Panel.update_panels
     Ncurses.doupdate
   end

@@ -71,5 +71,10 @@ module RETerm
         window.resize(rows, cols)
         self
       end
+
+      # Overridden by CDK components
+      def cdk?
+        false
+      end
   end # class Component
 end # module RETerm

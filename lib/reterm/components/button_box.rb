@@ -33,15 +33,18 @@ module RETerm
         [@title.size, total_button_size, @widget.requested_cols].max + 3
       end
 
+# TODO autocreate window if not specified?
+
       def window=(win)
         super(win)
         cw = win.create_child :rows => widget.requested_rows,
-                              :cols => widget.requested_cols
+                              :cols => [widget.requested_cols, requested_cols].max
         raise ArgumentError, "could not create child" if cw.win.nil?
         cw.component = widget
       end
 
       def activate!
+        widget.draw!
         component.draw(true)
 
         if widget.activatable?
@@ -69,10 +72,9 @@ module RETerm
                                true, false) # box, shadow
 
         widget.window.border!
-        widget.window.refresh
 
-        widget.component.setLLchar(Ncurses::ACS_LTEE) if widget.component.respond_to?(:setLLchar)
-        widget.component.setLRchar(Ncurses::ACS_RTEE) if widget.component.respond_to?(:setLRchar)
+        widget.component.setLLchar(Ncurses::ACS_LTEE) if widget.cdk? && widget.component.respond_to?(:setLLchar)
+        widget.component.setLRchar(Ncurses::ACS_RTEE) if widget.cdk? && widget.component.respond_to?(:setLRchar)
 
         w.setULchar(Ncurses::ACS_LTEE)
         w.setURchar(Ncurses::ACS_RTEE)
@@ -83,7 +85,7 @@ module RETerm
           return true
         end
 
-        widget.bind_key(CDK::KEY_TAB, widget_cb)
+        widget.bind_key(CDK::KEY_TAB, widget_cb) if widget.cdk?
 
         w
       end
