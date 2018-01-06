@@ -39,7 +39,7 @@ module RETerm
         @items[component.getCurrentItem]
       end
 
-      def activate!
+      def activate!(*input)
         i = super
         return nil unless normal_exit?
         @items[i]

@@ -47,7 +47,7 @@ module RETerm
       # logic when the user has selected an activatable? component.
       # Should be overriden by interactive subcomponents to
       # process user inpute specific to that component
-      def activate!
+      def activate!(*input)
         raise RuntimeError, "should not be activated"
       end
 

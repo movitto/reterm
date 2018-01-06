@@ -57,7 +57,7 @@ module RETerm
     end
 
     # Invoke CDK activation routine
-    def activate!
+    def activate!(*input)
       dispatch :activated
       component.resetExitType
 
@@ -65,7 +65,7 @@ module RETerm
 
       while [:EARLY_EXIT, :NEVER_ACTIVATED, :TIMEOUT].include?(component.exit_type) &&
             !shutdown?
-        r = component.activate([])
+        r = component.activate(input)
         run_sync! if sync_enabled?
       end
 

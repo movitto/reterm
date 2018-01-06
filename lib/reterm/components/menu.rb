@@ -47,9 +47,9 @@ module RETerm
         true
       end
 
-      def activate!
+      def activate!(*input)
         menu.win.refresh
-        handle_input
+        handle_input(*input)
         menu.current_item.name
       end
 

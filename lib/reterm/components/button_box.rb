@@ -49,12 +49,12 @@ module RETerm
         cw.component = widget
       end
 
-      def activate!
+      def activate!(*input)
         widget.draw!
         component.draw(true)
 
         if widget.activatable?
-          widget.activate!
+          widget.activate!(*input)
         else
           super
         end

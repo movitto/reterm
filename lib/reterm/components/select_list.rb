@@ -30,7 +30,7 @@ module RETerm
         }.compact
       end
 
-      def activate!
+      def activate!(*input)
         super
         selected
       end

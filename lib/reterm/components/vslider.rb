@@ -33,9 +33,9 @@ module RETerm
         true
       end
 
-      def activate!
+      def activate!(*input)
         refresh_win
-        handle_input
+        handle_input(*input)
         (range[1] - range[0]) * @value
       end
 

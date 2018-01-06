@@ -467,8 +467,8 @@ module RETerm
     end
 
     # Activate window component
-    def activate!
-      component.activate!
+    def activate!(*input)
+      component.activate!(*input)
     end
   end
 end # module RETerm

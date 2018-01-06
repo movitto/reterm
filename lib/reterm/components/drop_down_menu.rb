@@ -83,7 +83,7 @@ module RETerm
         @menus[component.current_title][@menus[component.current_title].keys[component.current_subtitle+1]]
       end
 
-      def activate!
+      def activate!(*input)
         r = super
         return nil if early_exit?
         m = r / 100

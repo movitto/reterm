@@ -62,36 +62,13 @@ module RETerm
 
         # Navigate to the specified component (nav_select)
         if self.nav_select 
-
           # it is a descendent of this one
           if self.contains?(self.nav_select)
-
-            # clear nav_select
-            ns = self.nav_select
-            self.nav_select = nil
-
-            # specified component is a direct child
-            if self.children.include?(ns)
-              remove_focus
-              @focus = focusable.index(ns)
-              update_focus
-              focused.activate!
-
-            # not a direct child, navigate down to layout
-            # containing it
-            else
-              child = self.layout_containing(ns)
-              child.nav_select = ns
-              ch = child.handle_input(true)
-            end
+            nav_to_selected
 
           # specified component is not a descendent,
-          # set it on the parent, clear it locally, and
-          # return to parent
           else
-            remove_focus
-            self.nav_select =  nil
-            self.parent.nav_select = ns
+            nav_to_parent
             return nil
           end
 
@@ -100,7 +77,6 @@ module RETerm
 
         elsif UP_CONTROLS.include?(ch)
           remove_focus
-
           return ch unless valid_input?(ch, from_parent)
           @focus -= 1
 
@@ -124,37 +100,21 @@ module RETerm
 
           if child
             child = child.component
-            if child.activatable?
-              # if current window does not contain child,
-              # set target component and return
-              if child.window.parent != self.window
-                # FIXME need to also handle case which child is not directly
-                # underneath self, but rather a descendent, underneath a component
-                # under self
 
-                remove_focus
-                parent.nav_select = child
+            if child.activatable?
+              if self.contains?(child)
+                nav_to_selected
+
+              else
+                self.nav_select = child
+                nav_to_parent
                 return nil
               end
-
-              remove_focus
-              @focus = focusable.index(child)
-              update_focus
-              focused.activate!
             end
           end
         end
 
-        # Sanitize focus
-        if @focus >= focusable.size
-          @focus = focusable.size - 1
-          return ch if from_parent
-
-        elsif @focus < 0
-          @focus = 0
-          return ch if from_parent
-        end
-
+        return ch unless sanitize_focus!(from_parent)
         ch = handle_focused unless nav_select
       end
 
@@ -167,19 +127,20 @@ module RETerm
       focusable[@focus]
     end
 
+    # Internal help, set the visual properties of the focused window
     def update_focus
       focused.window.border! unless !focused.highlight_focus?
       update_reterm
       window.root.draw!
     end
 
+    # Internal helper, logic invoked when a component gains focus
     def handle_focused
       ch = nil
 
       update_focus
 
-      # ... inject/pass ENTER_CONTROLS.first into activate!
-      focused.activate! if focused.activate_focus?
+      focused.activate!(ENTER_CONTROLS.first) if focused.activate_focus?
 
       if focused.kind_of?(Layout)
         ch = focused.handle_input(true)
@@ -191,8 +152,59 @@ module RETerm
       ch
     end
 
+    # Internal helper, logic invoked when a component loses focus
     def remove_focus
       focused.window.no_border!
+    end
+
+    # Internal helper, navigate to selected component under current
+    def nav_to_selected
+      # clear nav_select
+      ns = self.nav_select
+      self.nav_select = nil
+
+      # specified component is a direct child
+      if self.children.include?(ns)
+        remove_focus
+        @focus = focusable.index(ns)
+        update_focus
+        focused.activate!
+
+      # not a direct child, navigate down to layout
+      # containing it
+      else
+        child = self.layout_containing(ns)
+        child.nav_select = ns
+        ch = child.handle_input(true)
+      end
+    end
+
+    # Internal helper, navigate to selected component up heirarchy
+    def nav_to_parent
+      # set selected component on the parent,
+      # clear it locally, and
+      # return to parent
+      remove_focus
+      ns = self.nav_select
+      self.nav_select =  nil
+      self.parent.nav_select = ns
+    end
+
+    # Internal helper, sanitize the focus tracker.
+    # Return value indicates if sanity is preseved
+    # in the context of this component (else we will
+    # return to parent)
+    def sanitize_focus!(from_parent)
+      if @focus >= focusable.size
+        @focus = focusable.size - 1
+        return false if from_parent
+
+      elsif @focus < 0
+        @focus = 0
+        return false if from_parent
+      end
+
+      true
     end
   end # module NavInput
 end # module RETerm

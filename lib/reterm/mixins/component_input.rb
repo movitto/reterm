@@ -29,8 +29,8 @@ module RETerm
     end
 
     # Helper to be internally invoked by component on activation
-    def handle_input
-      while(!QUIT_CONTROLS.include?((ch = window.sync_getch)) && !shutdown?)
+    def handle_input(*input)
+      while(!QUIT_CONTROLS.include?((ch = next_ch(input))) && !shutdown?)
         if key_bound?(ch)
           invoke_key_bindings(ch)
 
@@ -55,6 +55,11 @@ module RETerm
     end
 
     private
+
+    def next_ch(input)
+      return window.sync_getch if input.empty?
+      input.shift
+    end
 
     def invoke_key_bindings(key)
       @bound_keys[key].each { |b| b.call self, key }

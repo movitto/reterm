@@ -26,7 +26,7 @@ module RETerm
       end
 
       # Method call when this component is activated
-      def activate!
+      def activate!(*input)
       end
     end # class Template
   end # module Components

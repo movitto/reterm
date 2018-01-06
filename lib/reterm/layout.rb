@@ -195,10 +195,10 @@ module RETerm
     # input system.
     #
     # @see NavInput
-    def activate!
+    def activate!(*input)
       draw!
       update_reterm
-      handle_input
+      handle_input(*input)
     end
   end # class Layout
 end # module RETerm
