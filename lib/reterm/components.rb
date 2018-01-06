@@ -42,5 +42,6 @@ require 'reterm/components/histogram'
 require 'reterm/components/scrolling_area'
 
 # additional
+require 'reterm/components/close_button'
 require 'reterm/components/cmd_output'
 require 'reterm/components/youtube'
