@@ -61,6 +61,23 @@ module RETerm
       !!@parent
     end
 
+    # Return boolean indicating if this window has children
+    def children?
+      !@children.empty?
+    end
+
+    # Return boolean indicating if this window is the
+    # first child of its parent
+    def first_child?
+      parent.children.index(self) != 0
+    end
+
+    # Return boolean indicating if this window is the
+    # last child of its parent
+    def last_child?
+      parent.children.index(self) == (parent.children.size - 1)
+    end
+
     # Return root window (recusively), self if parent is not set
     def root
       parent? ? parent.root : self

@@ -57,6 +57,10 @@ module RETerm
         true
       end
 
+      def activate_focus?
+        false
+      end
+
       # Return extra padding to be given to component
       def extra_padding
         (activatable? && highlight_focus?) ? 3 : 0

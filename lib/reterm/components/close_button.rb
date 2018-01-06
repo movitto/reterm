@@ -5,6 +5,10 @@ module RETerm
         super({:title => "X"}.merge(args))
       end
 
+      def activate_focus?
+        true
+      end
+
       private
 
       def callback

@@ -29,6 +29,12 @@ module RETerm
         # set x/y to next appropriate location
         super(h.merge(:y => current_rows, :x => 1))
       end
+
+      def valid_input?(ch, from_parent)
+        return true unless from_parent
+        !((LEFT_CONTROLS.include?(ch) && window.first_child?) ||
+         (RIGHT_CONTROLS.include?(ch) && window.last_child?))
+      end
     end # class Vertical
   end # module Layouts
 end # module RETerm

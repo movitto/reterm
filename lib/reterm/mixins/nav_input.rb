@@ -42,33 +42,54 @@ module RETerm
       !focusable.empty?
     end
 
+    # May be overridden by subclass to indicate if the
+    # specified input / context is valid
+    def valid_input?(ch, from_parent)
+      true
+    end
+
+
     # Helper to be internally invoked by navigation component
     # on activation
     def handle_input(from_parent=false)
       @focus ||= 0
 
+      # focus on first component
       ch = handle_focused unless nav_select
 
+      # Repeat until quit-sequence detected or app-shutdown
       while(!QUIT_CONTROLS.include?(ch) && !shutdown?)
+
+        # Navigate to the specified component (nav_select)
         if self.nav_select 
+
+          # it is a descendent of this one
           if self.contains?(self.nav_select)
+
+            # clear nav_select
             ns = self.nav_select
             self.nav_select = nil
 
+            # specified component is a direct child
             if self.children.include?(ns)
-              focused.window.no_border!
+              remove_focus
               @focus = focusable.index(ns)
               update_focus
               focused.activate!
 
+            # not a direct child, navigate down to layout
+            # containing it
             else
               child = self.layout_containing(ns)
               child.nav_select = ns
               ch = child.handle_input(true)
             end
 
+          # specified component is not a descendent,
+          # set it on the parent, clear it locally, and
+          # return to parent
           else
-            focused.window.no_border!
+            remove_focus
             self.nav_select =  nil
             self.parent.nav_select = ns
             return nil
@@ -78,39 +99,24 @@ module RETerm
           focused.activate!
 
         elsif UP_CONTROLS.include?(ch)
-          focused.window.no_border!
+          remove_focus
 
-          return ch if window.component.is_a?(Layouts::Horizontal) &&
-                       from_parent &&
-                       !window.parent.children.index(window) != 0
-
+          return ch unless valid_input?(ch, from_parent)
           @focus -= 1
 
         elsif LEFT_CONTROLS.include?(ch)
-          focused.window.no_border!
-
-          return ch if window.component.is_a?(Layouts::Vertical) &&
-                       from_parent &&
-                       !window.parent.children.index(window) != 0
-
+          remove_focus
+          return ch unless valid_input?(ch, from_parent)
           @focus -= 1
 
         elsif DOWN_CONTROLS.include?(ch)
-          focused.window.no_border!
-
-          return ch if window.component.is_a?(Layouts::Horizontal) &&
-                       from_parent &&
-                       !window.parent.children.index(window) != (window.parent.children.size - 1)
-
+          remove_focus
+          return ch unless valid_input?(ch, from_parent)
           @focus += 1
 
         elsif RIGHT_CONTROLS.include?(ch)
-          focused.window.no_border!
-
-          return ch if window.component.is_a?(Layouts::Vertical) &&
-                       from_parent &&
-                       !window.parent.children.index(window) != (window.parent.children.size - 1)
-
+          remove_focus
+          return ch unless valid_input?(ch, from_parent)
           @focus += 1
 
         elsif mev = handle_mouse(ch)
@@ -126,12 +132,12 @@ module RETerm
                 # underneath self, but rather a descendent, underneath a component
                 # under self
 
-                focused.window.no_border!
+                remove_focus
                 parent.nav_select = child
                 return nil
               end
 
-              focused.window.no_border!
+              remove_focus
               @focus = focusable.index(child)
               update_focus
               focused.activate!
@@ -139,12 +145,12 @@ module RETerm
           end
         end
 
+        # Sanitize focus
         if @focus >= focusable.size
           @focus = focusable.size - 1
           return ch if from_parent
-        end
 
-        if @focus < 0
+        elsif @focus < 0
           @focus = 0
           return ch if from_parent
         end
@@ -172,6 +178,9 @@ module RETerm
 
       update_focus
 
+      # ... inject/pass ENTER_CONTROLS.first into activate!
+      focused.activate! if focused.activate_focus?
+
       if focused.kind_of?(Layout)
         ch = focused.handle_input(true)
 
@@ -180,6 +189,10 @@ module RETerm
       end
 
       ch
+    end
+
+    def remove_focus
+      focused.window.no_border!
     end
   end # module NavInput
 end # module RETerm
