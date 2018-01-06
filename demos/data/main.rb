@@ -22,12 +22,18 @@ init_reterm {
   layout1 = Layouts::Grid.new
   win.component = layout1
 
+  ###
+
   menus = [{"File"  => nil,
             "Quit"  => :quit},
            {"Help"  => nil,
             "About" => :about}]
 
-  menu = Components::DropDown.new :menus => menus
+  mbg  = ColorPair.register(:white, :blue)
+  mc   = ColorPair.register(:black, :white)
+  menu = Components::DropDown.new :menus      => menus,
+                                  :color      => mc,
+                                  :background => mbg
   layout1.add_child :component => menu,
                     :x => 1, :y => 1
 
@@ -35,18 +41,28 @@ init_reterm {
     next unless menu.normal_exit?
 
     if menu.selected == :about
+      blue   = ColorPair.with_fg(:blue).first
+      msg    = "RETerm Demo - #{blue.cdk_fmt}http://github.com/movitto/reterm"
+
       dwin   = Window.new
-      dialog = Components::Dialog.new(:message => "TODO")
+      dialog = Components::Dialog.new(:message => msg)
       dwin.component = dialog
+
       dialog.activate!
-      dialog.window.erase
-      dialog.window.finalize!
+      dialog.close!
       update_reterm(true)
 
     elsif menu.selected == :quit
       shutdown!
     end
   end
+
+  cb = Components::CloseButton.new
+  layout1.add_child :component => cb,
+                    :x => :right,
+                    :y => :top
+
+  ###
 
   layout2 = Layouts::Horizontal.new
   layout1.add_child :component => layout2,
@@ -55,7 +71,7 @@ init_reterm {
   globe = Components::Globe.new
   layout2.add_child :component => globe
 
-  locs = Components::ScrollList.new
+  locs = Components::ScrollList.new :title => "</B>Locations"
   layout2.add_child :component => locs,
                     :expand    => true,
                     :fill      => true
@@ -69,7 +85,7 @@ init_reterm {
     globe << mark
 
     color = globe.color_for(mark)
-    loc = "</#{color.id}>" + c["city"].to_s + "," + c["province"].to_s
+    loc = "#{color.cdk_fmt}" + c["city"].to_s + "," + c["province"].to_s
     locs << loc
   end
 
@@ -90,11 +106,7 @@ init_reterm {
     bbw.component = button_box
 
     button_box.activate!
-
-    # FIXME optimize cleanup process (& for dialog above)
-    weather_popup.erase
-    bbw.erase
-    bbw.finalize!
+    button_box.close!
     update_reterm(true)
 
     # reactivate locs

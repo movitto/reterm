@@ -33,6 +33,12 @@ module RETerm
         [@title.size, total_button_size, @widget.requested_cols].max + 3
       end
 
+      def close!
+        widget.erase
+        window.erase
+        window.finalize!
+      end
+
 # TODO autocreate window if not specified?
 
       def window=(win)

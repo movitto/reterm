@@ -7,8 +7,16 @@ module RETerm
     attr_accessor :id
     attr_accessor :tags
 
-    attr_accessor :fg
-    attr_accessor :bg
+    # Color Identifiers
+    attr_accessor :fg,  :bg
+
+    # Actual NCurses colors
+    attr_accessor :fgc, :bgc
+
+    # Return color in CDK format
+    def cdk_fmt
+      "</#{@id}>"
+    end
 
     def self.builtin
       @builtin ||=  Ncurses.constants.select { |c|
@@ -54,9 +62,11 @@ module RETerm
       # before conveRETermng it to symbol w/ "intern"
       fg = fg.to_s.downcase.intern if fg.is_a?(String) || fg.is_a?(Symbol)
       bg = bg.to_s.downcase.intern if bg.is_a?(String) || bg.is_a?(Symbol)
+      @fg, @bg = fg, bg
 
       fgc = fg.is_a?(Symbol) ? Ncurses.const_get("COLOR_#{fg.to_s.upcase}") : fg
       bgc = bg.is_a?(Symbol) ? Ncurses.const_get("COLOR_#{bg.to_s.upcase}") : bg
+      @fgc, @bgc = fgc, bgc
 
       Ncurses.init_pair(@id, fgc, bgc)
     end
@@ -75,11 +85,29 @@ module RETerm
       @@registry
     end
 
-    # Return first Color Pair found with the given tag
+    # Return Color Pairs found with the given tag
     # or nil for no matches
     def self.for(tag)
       @@registry ||= []
-      @@registry.find { |cp| cp.tags.include?(tag) }
+      @@registry.select { |cp| cp.tags.include?(tag) }
+    end
+
+    # Return Color Pairs found with the given
+    # fg color
+    def self.with_fg(color)
+      @@registry ||= []
+      @@registry.select { |cp|
+        color == (color.is_a?(Symbol) ? cp.fg : cp.fgc)
+      }
+    end
+
+    # Return Color Pairs found with the given
+    # bg color
+    def self.with_bg(color)
+      @@registry ||= []
+      @@registry.select { |cp|
+        color == (color.is_a?(Symbol) ? cp.bg : cp.bgc)
+      }
     end
   end # class ColorPair
 end # module RETerm

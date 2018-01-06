@@ -13,20 +13,19 @@ module RETerm
       end
 
       def exceeds_bounds_with?(child)
-        cols = child.is_a?(Hash) ?
-               [current_cols, child[:cols]].compact.max :
-               [current_cols, child.cols].max
+        x1 = child.is_a?(Hash) ? child[:x] : child.x
+        y1 = child.is_a?(Hash) ? child[:y] : child.y
 
-        rows = child.is_a?(Hash) ?
-               [current_rows, child[:rows]].compact.max :
-               [current_rows, child.rows].max
+        x2 = child.is_a?(Hash) ?
+              [current_cols, x1 + child[:cols]].compact.max :
+              [current_cols, x1 + child.cols].max
 
-        x = child.is_a?(Hash) ? child[:x] : child.x
-        y = child.is_a?(Hash) ? child[:y] : child.y
+        y2 = child.is_a?(Hash) ?
+               [current_rows, y1 + child[:rows]].compact.max :
+               [current_rows, y1 + child.rows].max
 
-        x <= window.x || y <= window.y ||
-        (x + cols) >= window.cols      ||
-        (y + rows) >= window.rows
+        x1 <= window.x    || y1 <= window.y ||
+        x2 >= window.cols || y2 >= window.rows
       end
     end # class Grid
   end # module Layouts

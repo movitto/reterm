@@ -49,7 +49,7 @@ module RETerm
       parse_child(w, win)
 
       w.border! if win.key?('border') && !!win['border']
-      w.colors = ColorPair.for(win['colors']) if win.key?('colors')
+      w.colors = ColorPair.for(win['colors']).first if win.key?('colors')
 
       w
     end
@@ -113,7 +113,7 @@ module RETerm
                          :cols => cols
 
         cw.border! if child.key?('border') && !!child['border']
-        cw.colors = ColorPair.for(child['colors']) if child.key?('colors')
+        cw.colors = ColorPair.for(child['colors']).first if child.key?('colors')
 
         cw.component = parse_child(cw, child)
       }

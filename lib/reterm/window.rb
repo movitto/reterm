@@ -104,22 +104,24 @@ module RETerm
       @@registry ||= []
       @@registry  << self
 
+      @children = []
+
       @x    = args[:x] || 0
       @y    = args[:y] || 0
 
       @vborder = args[:vborder] || 0
       @hborder = args[:hborder] || 0
 
-      self.component = args[:component] if args.key?(:component)
+      component = args[:component]
 
       @rows = args[:rows] ||
-              (component? ?
-               (@component.requested_rows + @component.extra_padding + 1) :
+              (component ?
+               (component.requested_rows + component.extra_padding + 1) :
                (Terminal.rows - 1))
 
       @cols = args[:cols] ||
-              (component? ?
-               (@component.requested_cols + @component.extra_padding + 1) :
+              (component ?
+               (component.requested_cols + component.extra_padding + 1) :
                (Terminal.cols - 1))
 
       if args[:parent]
@@ -139,11 +141,11 @@ module RETerm
         @win = Ncurses::WINDOW.new(@rows, @cols, @y, @x)
       end
 
+      self.component = component if !!component
+
       Ncurses::keypad(@win, true)
 
       @win.timeout(SYNC_TIMEOUT) if @win && sync_enabled? # XXX
-
-      @children = []
 
       @expand      = !!args[:expand]
       @must_expand = !!args[:must_expand]
@@ -174,11 +176,11 @@ module RETerm
       nx = x
       ny = y
 
-      nx = 0 if x == :left
-      ny = 0 if y == :top
+      nx = 1 if x == :left
+      ny = 1 if y == :top
 
-      nx = parent.cols - cols if x == :right
-      ny = parent.rows - rows if y == :bottom
+      nx = parent.cols - cols - 1 if x == :right
+      ny = parent.rows - rows - 1 if y == :bottom
 
       nx = parent.cols / 2 - cols / 2 if x == :center
       ny = parent.rows / 2 - rows / 2 if y == :center
@@ -394,7 +396,7 @@ module RETerm
 
     # Dispatch to component synchronization
     def sync!
-      component.sync!
+      component.sync! if component?
       children.each { |c|
         c.sync!
       }
@@ -412,7 +414,7 @@ module RETerm
 
     # Set window color
     def colors=(c)
-      @colors = c.is_a?(ColorPair) ? c : ColorPair.for(c)
+      @colors = c.is_a?(ColorPair) ? c : ColorPair.for(c).first
       @win.bkgd(Ncurses.COLOR_PAIR(@colors.id)) unless @win.nil?
 
       component.colors = @colors if component?

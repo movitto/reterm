@@ -24,8 +24,9 @@ init_reterm {
   win2.component = label
 
   menu.handle(:changed) {
-    label.text = "Changed to #{menu.current}"
+    label.text = "Changed to #{menu.selected}"
     label.draw!
+    update_reterm
   }
 
   win1.component = menu

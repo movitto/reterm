@@ -31,7 +31,7 @@ module RETerm
       end
 
       def requested_cols
-        100
+        85
       end
 
       def sync!

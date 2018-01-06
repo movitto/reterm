@@ -63,8 +63,8 @@ module RETerm
     # Returns boolean indicating if current layout
     # exceeds bounds of window
     def exceeds_bounds?
-      current_cols >= window.cols ||
-      current_rows >= window.rows
+      current_cols > window.cols ||
+      current_rows > window.rows
     end
 
 
@@ -126,12 +126,12 @@ module RETerm
 
       if h[:fill]
         p = parent? ? parent.window : Terminal
-        if (h[:y] + h[:rows]) < (p.rows-2)
-          h[:rows] = p.rows-2 - h[:y]
+        if (h[:y] + h[:rows]) < p.rows
+          h[:rows] = p.rows-h[:y]-4 # FIXME: 4 = extrapadding + 1 (?)
         end
 
-        if (h[:x] + h[:cols]) < (p.cols-2)
-          h[:cols] = p.cols-2 - h[:x]
+        if (h[:x] + h[:cols]) < p.cols
+          h[:cols] = p.cols-h[:x]-4
         end
       end
 
@@ -167,8 +167,8 @@ module RETerm
     end
 
     def expand(h)
-      nr = current_rows + h[:rows]
-      nc = current_cols + h[:cols]
+      nr = [current_rows, h[:y] + h[:rows]].max
+      nc = [current_cols, h[:x] + h[:cols]].max
 
       # verify parent can contain expanded area and is expandable
       if parent?

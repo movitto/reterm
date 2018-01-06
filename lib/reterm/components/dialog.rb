@@ -27,6 +27,12 @@ module RETerm
         [message.size, total_button_size].max
       end
 
+      def close!
+        window.erase
+        window.finalize!
+        self
+      end
+
       private
 
       def _component
