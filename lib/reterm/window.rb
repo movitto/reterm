@@ -69,12 +69,14 @@ module RETerm
     # Return boolean indicating if this window is the
     # first child of its parent
     def first_child?
-      parent.children.index(self) != 0
+      return true unless parent?
+      parent.children.index(self) == 0
     end
 
     # Return boolean indicating if this window is the
     # last child of its parent
     def last_child?
+      return true unless parent?
       parent.children.index(self) == (parent.children.size - 1)
     end
 

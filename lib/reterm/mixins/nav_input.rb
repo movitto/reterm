@@ -28,6 +28,10 @@ module RETerm
     # Right navigation keys
     RIGHT_CONTROLS = ['l'.ord, 'L'.ord, "\t".ord, Ncurses::KEY_RIGHT]
 
+    # All movement keys
+    MOVEMENT_CONTROLS = UP_CONTROLS   + DOWN_CONTROLS +
+                        LEFT_CONTROLS + RIGHT_CONTROLS
+
     # Used internally to specify component
     # which we should navigate to
     attr_accessor :nav_select
@@ -75,43 +79,11 @@ module RETerm
         elsif ENTER_CONTROLS.include?(ch)
           focused.activate!
 
-        elsif UP_CONTROLS.include?(ch)
-          remove_focus
-          return ch unless valid_input?(ch, from_parent)
-          @focus -= 1
+        elsif MOVEMENT_CONTROLS.include?(ch)
+          handle_movement(ch, from_parent)
 
-        elsif LEFT_CONTROLS.include?(ch)
-          remove_focus
-          return ch unless valid_input?(ch, from_parent)
-          @focus -= 1
-
-        elsif DOWN_CONTROLS.include?(ch)
-          remove_focus
-          return ch unless valid_input?(ch, from_parent)
-          @focus += 1
-
-        elsif RIGHT_CONTROLS.include?(ch)
-          remove_focus
-          return ch unless valid_input?(ch, from_parent)
-          @focus += 1
-
-        elsif mev = handle_mouse(ch)
-          child = window.root.child_containing(mev.x, mev.y, mev.z)
-
-          if child
-            child = child.component
-
-            if child.activatable?
-              if self.contains?(child)
-                nav_to_selected
-
-              else
-                self.nav_select = child
-                nav_to_parent
-                return nil
-              end
-            end
-          end
+        elsif mev = process_mouse(ch)
+          handle_mouse(mev)
         end
 
         return ch unless sanitize_focus!(from_parent)
@@ -122,6 +94,20 @@ module RETerm
     end
 
     private
+
+    def handle_movement(ch, from_parent)
+      remove_focus
+      return ch unless valid_input?(ch, from_parent)
+
+      if UP_CONTROLS.include?(ch) ||
+         LEFT_CONTROLS.include?(ch)
+        @focus -= 1
+
+      elsif DOWN_CONTROLS.include?(ch) ||
+            RIGHT_CONTROLS.include?(ch)
+        @focus += 1
+      end
+    end
 
     def focused
       focusable[@focus]
@@ -205,6 +191,25 @@ module RETerm
       end
 
       true
+    end
+
+    def handle_mouse(mev)
+      child = window.root.child_containing(mev.x, mev.y, mev.z)
+
+      if child
+        child = child.component
+
+        if child.activatable?
+          if self.contains?(child)
+            nav_to_selected
+
+          else
+            self.nav_select = child
+            nav_to_parent
+            return nil
+          end
+        end
+      end
     end
   end # module NavInput
 end # module RETerm

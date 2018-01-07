@@ -28,8 +28,8 @@ module RETerm
         x2 >= window.cols || y2 >= window.rows
       end
 
-      # TODO: Override handle_input, cycle through components
-      # based on movement direction & child position on grid
+     # TODO: Override handle_movement, cycle through components
+     # based on movement direction & child position on grid
     end # class Grid
   end # module Layouts
 end # module RETerm

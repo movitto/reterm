@@ -32,8 +32,8 @@ module RETerm
 
       def valid_input?(ch, from_parent)
         return true unless from_parent
-        !((UP_CONTROLS.include?(ch) && window.first_child?) ||
-        (DOWN_CONTROLS.include?(ch) && window.last_child?))
+        !((UP_CONTROLS.include?(ch)   && window.first_child?) ||
+          (DOWN_CONTROLS.include?(ch) && window.last_child?))
       end
     end # class Horizontal
   end # module Layouts

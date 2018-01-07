@@ -18,7 +18,7 @@ module RETerm
       #puts "B#{b} #{evnt}, #{coords}"
     end
 
-    def handle_mouse(ch)
+    def process_mouse(ch)
       return nil unless ch == Ncurses::KEY_MOUSE
 
       mev = Ncurses::MEVENT.new
