@@ -1,4 +1,11 @@
 COMPONENTS = {
+  :generic => {
+    :params => {
+      "Fill"   => :bool,
+      "Expand" => :bool
+    }
+  },
+
   # Layouts
   :Horizontal => {
     :desc => "Horizontal Layout",

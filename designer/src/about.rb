@@ -29,6 +29,7 @@ class About
     a.website_label = "RETerm Project Website"
 
     a.run
+    a.destroy
   end
 end # class About
 

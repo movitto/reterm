@@ -64,18 +64,14 @@ class ComponentsList < VR::ListView
 
     return unless designer.has_toggled_area?
 
-    e = COMPONENTS[@selected.intern]
-    if e.key?(:params)
-      w = ComponentParams.new(@selected.intern, designer)
-      w.show_glade(designer)
-    else
-      designer.create_component(@selected.intern, [])
-    end
+    w = ComponentParams.new(@selected.intern, designer)
+    w.show_glade(designer)
   end
 
   DEFAULT_IMG = GdkPixbuf::Pixbuf.new(:file => "#{IMG_DIR}/blank.png")
 
   def desc_for(c)
+    return "" unless COMPONENTS.key?(c)
     COMPONENTS[c][:desc]
   end
 

@@ -107,9 +107,11 @@ class Designer
   end
 
   def set_components
+    RETerm::Config.load_plugins
+
     (RETerm::Layouts.all.sort +
      RETerm::Components.all.sort).each { |c|
-      @component_list.add_component c if COMPONENTS.key?(c)
+      @component_list.add_component c
     }
   end
 
