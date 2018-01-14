@@ -24,3 +24,4 @@ require 'reterm/layouts'
 
 require 'reterm/loader'
 require 'reterm/util'
+require 'reterm/config'
