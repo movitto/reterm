@@ -189,6 +189,7 @@ module RETerm
     # Draw all layout children
     def draw!
       children.each { |c| c.draw! }
+      draw_focus!
     end
 
     # Activates layout by dispatching to navigation

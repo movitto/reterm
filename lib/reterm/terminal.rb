@@ -33,5 +33,5 @@ module RETerm
         w.dispatch :resize
       }
     end
-  end
-end # module Terminal
+  end # class Terminal
+end # module RETerm

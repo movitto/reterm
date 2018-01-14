@@ -28,8 +28,27 @@ module RETerm
         x2 >= window.cols || y2 >= window.rows
       end
 
-     # TODO: Override handle_movement, cycle through components
-     # based on movement direction & child position on grid
+      # Cycle through components child position on grid
+      def next_focus(ch)
+        f = nil
+           if    UP_CONTROLS.include?(ch)
+          f = focusable.select { |f| f.window.y < focused.window.y }.first
+
+        elsif  DOWN_CONTROLS.include?(ch)
+          f = focusable.select { |f| f.window.y > focused.window.y }.first
+
+        elsif  LEFT_CONTROLS.include?(ch)
+          f = focusable.select { |f| f.window.x < focused.window.x }.first
+
+        elsif RIGHT_CONTROLS.include?(ch)
+          f = focusable.select { |f| f.window.x > focused.window.x }.first
+
+        else
+          return super
+        end
+
+        focusable.index(f)
+      end
     end # class Grid
   end # module Layouts
 end # module RETerm

@@ -95,27 +95,36 @@ module RETerm
 
     private
 
+
     def handle_movement(ch, from_parent)
       remove_focus
       return ch unless valid_input?(ch, from_parent)
+      @focus = next_focus(ch)
+    end
 
+    def next_focus(ch)
       if UP_CONTROLS.include?(ch) ||
          LEFT_CONTROLS.include?(ch)
-        @focus -= 1
+        @focus - 1
 
       elsif DOWN_CONTROLS.include?(ch) ||
             RIGHT_CONTROLS.include?(ch)
-        @focus += 1
+        @focus + 1
       end
     end
 
     def focused
+      return nil unless !!@focus
       focusable[@focus]
+    end
+
+    def draw_focus!
+      focused.window.border! if !!focused && focused.highlight_focus?
     end
 
     # Internal help, set the visual properties of the focused window
     def update_focus
-      focused.window.border! unless !focused.highlight_focus?
+      draw_focus!
       update_reterm
       window.root.draw!
     end
