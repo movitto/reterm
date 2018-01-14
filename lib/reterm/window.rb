@@ -426,6 +426,15 @@ module RETerm
       @win.mvaddstr(*a)
     end
 
+    # Enable bold formatting
+    def bold!
+      @win.attron(Ncurses::A_BOLD)
+      return unless block_given?
+
+      yield
+      @win.attroff(Ncurses::A_BOLD)
+    end
+
     # Return bool indiciating if colors are set
     def colored?
       !!@colors

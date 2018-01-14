@@ -27,7 +27,25 @@ module RETerm
     end
 
     def self.default_bg
-      Ncurses::WINDOW.new(1, 1, 1, 1).getbkgd
+      @dbg ||= Ncurses::WINDOW.new(1, 1, 1, 1).getbkgd
+    end
+
+    # Reserves and returns block of N colors
+    def self.reserve(n=1)
+      @reserved   ||= []
+      @next_color ||= 50
+
+      0.upto(n) {
+        @reserved   << @next_color
+        @next_color += 1
+      }
+
+      @reserved[-n..-1]
+    end
+
+    # Alias for reserve
+    def self.next_color
+      reserve
     end
 
     # Redefined system RGB color. Color name should be specified
@@ -39,7 +57,57 @@ module RETerm
     # @param [Integer] g value to assign to green component
     # @param [Integer] b value to assign to blue component
     def self.change(color, r, g, b)
-      Ncurses::init_color Ncurses.const_get("COLOR_#{color.to_s.upcase}"), r, g, b
+      # XXX shoehorning 256 colors into ncurses 0-1000 scale here,
+      # possible explore if alternative solutions are better
+      r = r.to_f / 255 * 1000
+      g = g.to_f / 255 * 1000
+      b = b.to_f / 255 * 1000
+
+      c = builtin.include?(color.to_s.downcase.intern)    ?
+          Ncurses.const_get("COLOR_#{color.to_s.upcase}") : color
+
+      Ncurses::init_color c, r, g, b
+    end
+
+    # An alias for #change
+    def self.define(color, r, g, b)
+      change(color, r, g, b)
+    end
+
+    # Return RGB components corresponding to system color
+    #
+    # @param [String, Symbol] color name of color to return
+    def self.get(color)
+      c = builtin.include?(color.to_s.downcase.intern)    ?
+          Ncurses.const_get("COLOR_#{color.to_s.upcase}") : color
+
+      r, g, b = [[],[],[]]
+      Ncurses::color_content c, r, g, b
+
+      [r.first, g.first, b.first]
+    end
+
+    # Temporarily resassign RGB to named color, invoke callback
+    # block, and restore to original
+    # @param [Hash<String,Symbol,Array<Integer>>] colors color assignments
+    #   to use, mapping of color names to RBG pairs
+    # @param [Integer] r value to assign to red component
+    # @param [Integer] g value to assign to green component
+    # @param [Integer] b value to assign to blue component
+    def self.use(colors={})
+      orig = {}
+      colors.each { |n, rgb|
+        orig[n] = get(n)
+        change(n, *rgb)
+      }
+
+      yield
+
+      colors.each { |n, rgb|
+        change(n, *orig[n])
+      }
+
+      nil
     end
 
     # Instantiate a new ColorPair, specifying foreground and background
@@ -66,9 +134,22 @@ module RETerm
 
       fgc = fg.is_a?(Symbol) ? Ncurses.const_get("COLOR_#{fg.to_s.upcase}") : fg
       bgc = bg.is_a?(Symbol) ? Ncurses.const_get("COLOR_#{bg.to_s.upcase}") : bg
+
       @fgc, @bgc = fgc, bgc
 
       Ncurses.init_pair(@id, fgc, bgc)
+    end
+
+    # Returns ncurses color pair corresponding to this instance
+    def nc
+      Ncurses::COLOR_PAIR(@id)
+    end
+
+    # Encapsulates window operation in color pair attribute
+    def format(win)
+      win.win.attron(nc)
+      yield
+      win.win.attroff(nc)
     end
 
     # Create and store a new Color Pair in a static
