@@ -17,11 +17,15 @@ module RETerm
       end
 
       def requested_rows
-        3 + @items.size
+        5 + @items.size
       end
 
       def requested_cols
-        [@title.size, max_item_size + 4].min
+        [@title.size+2, max_item_size + 2].max
+      end
+
+      def current
+        @items[component.getCurrentItem]
       end
 
       def selected
