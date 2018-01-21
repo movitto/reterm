@@ -14,6 +14,7 @@ module RETerm
       # @option args [Integer] :min min entry length
       # @option args [Integer] :max max entry length
       def initialize(args={})
+        super
         @title   = args[:title] || ""
         @label   = args[:label] || ""
         @min_len = args[:min]   || 0

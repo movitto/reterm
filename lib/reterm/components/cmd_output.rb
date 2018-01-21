@@ -11,6 +11,7 @@ module RETerm
       # @option args [String] :cmd command to run
       def initialize(args={})
         activate_sync!
+
         super
         @cmd = args[:cmd]
       end

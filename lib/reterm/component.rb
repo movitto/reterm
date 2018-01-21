@@ -6,6 +6,10 @@ module RETerm
 
       attr_accessor :window
 
+      def initialize(args={})
+        self.highlight_focus = args[:highlight_focus] if args.key?(:highlight_focus)
+      end
+
       # This method is invoked when adding component to layout
       # to determine rows needed
       def requested_rows

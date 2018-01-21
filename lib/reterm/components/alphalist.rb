@@ -13,6 +13,7 @@ module RETerm
       # @option args [Array<String>] :items items to
       #   populate list with
       def initialize(args={})
+        super
         @title  = args[:title] || ""
         @label  = args[:label] || ""
         @items  = args[:items] || []

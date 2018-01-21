@@ -15,6 +15,7 @@ module RETerm
       # @option args [Integer] :rows number of logical rows
       #   to create
       def initialize(args={})
+        super
         @title   = args[:title] || ""
         @label   = args[:label] || ""
         @min_len = args[:min]   || 0

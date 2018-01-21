@@ -9,6 +9,7 @@ module RETerm
       # @option args [Array<Array<Integer,Double>>] :matrix 2-dimensional array
       #   containing Z values corresponding to x/y grid coordinates
       def initialize(args={})
+        super
         @matrix = args[:matrix] || [[]]
 
         raise ArgumentError unless @matrix.is_a?(Array) &&

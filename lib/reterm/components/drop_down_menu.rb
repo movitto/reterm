@@ -16,6 +16,7 @@ module RETerm
       # @option args [ColorPair] :backound color pair to assign to
       #   menu bar background color
       def initialize(args={})
+        super
         @menus = args[:menus] || []
         @locs  = args[:locs]  || 0.upto(size-1).collect { :left }
         @pos   = args[:pos]   || :top

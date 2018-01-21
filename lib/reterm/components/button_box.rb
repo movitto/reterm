@@ -18,6 +18,7 @@ module RETerm
       #   buttons to assign to dialog
       #
       def initialize(args={})
+        super
         @widget  = args[:widget]
         @title   = args[:title] || ""
         @buttons = [args[:buttons]].flatten.compact

@@ -13,6 +13,7 @@ module RETerm
       #   buttons to assign to dialog
       #
       def initialize(args={})
+        super
         @message = [args[:message]].flatten.compact
         @buttons = [args[:buttons]].flatten.compact
 

@@ -11,6 +11,7 @@ module RETerm
       # @option args [Integer] :lines number of lines
       #   in the area
       def initialize(args={})
+        super
         @title  = args[:title] || ""
         @lines  = args[:lines] || 10
       end

@@ -25,6 +25,7 @@ module RETerm
       # @option args [Integer] :min min histogram value
       # @option args [Integer] :max max histogram value
       def initialize(args={})
+        super
         @title = args[:title] || ""
         @min   = args[:min]   || 0
         @max   = args[:max]   || 10

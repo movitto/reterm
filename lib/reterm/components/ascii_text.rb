@@ -12,6 +12,7 @@ module RETerm
       #   default empty string
       # @option args [String] :font font to use
       def initialize(args={})
+        super
         @text = args[:text] || ""
         @font = args[:font]
       end

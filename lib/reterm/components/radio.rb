@@ -12,6 +12,7 @@ module RETerm
       # @option args [Array<String>] :items items to
       #   populate radio with
       def initialize(args={})
+        super
         @title  = args[:title] || ""
         @items  = args[:items] || []
       end

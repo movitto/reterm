@@ -4,6 +4,7 @@ module RETerm
     class Template < Component
       # All components must accept args hash (specified via loader)
       def initialize(args={})
+        super
       end
 
       # Override this to request minimum rows

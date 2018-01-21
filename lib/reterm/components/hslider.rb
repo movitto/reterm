@@ -10,6 +10,7 @@ module RETerm
       # @option args [String] :title title of slider
       # @option args [String] :label label of slider
       def initialize(args={})
+        super
         @title = args[:title] || " "
         @label = args[:label] || " "
 

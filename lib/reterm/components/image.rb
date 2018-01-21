@@ -9,6 +9,7 @@ module RETerm
       # @option args [String] :file path to the file containing
       #   the image
       def initialize(args={})
+        super
         @file = args[:file]
       end
 

@@ -10,6 +10,7 @@ module RETerm
       # @param [Hash] args label params
       # @option args [String] :text text of button
       def initialize(args={})
+        super
         @text    = args[:text] || ""
       end
 

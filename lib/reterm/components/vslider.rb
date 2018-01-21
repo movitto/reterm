@@ -10,6 +10,7 @@ module RETerm
       #
       # @param [Hash] args slider params
       def initialize(args={})
+        super
         @initial_value = 0
         @increment     = 0.01
         @range         = [0, 1]

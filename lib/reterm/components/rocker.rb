@@ -19,6 +19,7 @@ module RETerm
       #   val = rocker.activate!
       #
       def initialize(args={})
+        super
         @items = []
         @index  = nil
         @labels = true

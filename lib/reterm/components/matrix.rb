@@ -8,6 +8,7 @@ module RETerm
       #
       # @param [Hash] args matrix params
       def initialize(args={})
+        super
         @rows  = args[:rows]
         @cols  = args[:cols]
         @title = args[:title]
