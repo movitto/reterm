@@ -48,7 +48,7 @@ module RETerm
     #ensure
       stop_track_resize
       Ncurses.curs_set(1)
-      Window.all.each { |w| w.finalize! }
+      Window.top.each { |w| w.finalize! }
       CDK::SCREEN.endCDK if cdk_enabled?
       Ncurses.endwin
       #`reset -Q` # XXX only way to guarantee a full reset (see above)
