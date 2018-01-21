@@ -2,7 +2,7 @@ require 'ncursesw'
 require_relative './resize'
 
 module RETerm
-  SYNC_TIMEOUT = 300 # in milliseconds if enabled
+  SYNC_TIMEOUT = 150 # in milliseconds if enabled
 
   ###############################
 
