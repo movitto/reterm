@@ -123,6 +123,10 @@ module RETerm
       @@registry ||= []
       @@registry  << self
 
+      @@wid ||= 0
+      @@wid  += 1
+      @window_id = @@wid
+
       @children = []
 
       @x    = args[:x] || 0
@@ -135,12 +139,12 @@ module RETerm
 
       @rows = args[:rows] ||
               (component ?
-               (component.requested_rows + component.extra_padding + 1) :
+               (component.requested_rows + component.extra_padding) :
                (Terminal.rows - 1))
 
       @cols = args[:cols] ||
               (component ?
-               (component.requested_cols + component.extra_padding + 1) :
+               (component.requested_cols + component.extra_padding) :
                (Terminal.cols - 1))
 
       if args[:parent]
@@ -170,11 +174,6 @@ module RETerm
       @must_expand = !!args[:must_expand]
 
       @fill        = !!args[:fill]
-
-      @@wid ||= 0
-      @@wid  += 1
-
-      @window_id = @@wid
     end
 
     ###
@@ -432,6 +431,11 @@ module RETerm
       return unless block_given?
 
       yield
+      @win.attroff(Ncurses::A_BOLD)
+    end
+
+    # Disable bold formatting
+    def no_bold!
       @win.attroff(Ncurses::A_BOLD)
     end
 
