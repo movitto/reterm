@@ -51,10 +51,12 @@ module RETerm
         raise RuntimeError, "should not be activated"
       end
 
+      attr_writer :highlight_focus
+
       # Return boolean indicating if this component should
-      # be highlighted on focus
+      # be highlighted on focus (default true)
       def highlight_focus?
-        true
+        !defined?(:@highlight_focus) || @highlight_focus
       end
 
       def activate_focus?
