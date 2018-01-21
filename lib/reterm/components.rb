@@ -14,9 +14,6 @@ end
 
 require 'reterm/component'
 
-# ncurses
-require 'reterm/components/menu'
-
 # custom
 require 'reterm/components/dial'
 require 'reterm/components/rocker'
