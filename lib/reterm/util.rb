@@ -108,4 +108,9 @@ module RETerm
 
     r
   end
+
+  # Helper appending string to debug file
+  def file_append(f, t)
+    File.open(f, "a") { |f| f.write t }
+  end
 end # module RETerm
