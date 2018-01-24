@@ -51,6 +51,8 @@ module RETerm
     # Assign component to window. This will autoassign local
     # window to component as well.
     def component=(c)
+      clear!
+
       c.window   = self
       c.colors   = @colors if colored?
       @component = c
