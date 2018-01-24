@@ -197,9 +197,20 @@ module RETerm
     #
     # @see NavInput
     def activate!(*input)
+      @deactivate = false
+
       draw!
       update_reterm
       handle_input(*input)
+    end
+
+    # Decactivates layout by disabling further input
+    def deactivate!
+      @deactivate = true
+    end
+
+    def deactivate?
+      !!@deactivate
     end
   end # class Layout
 end # module RETerm

@@ -56,6 +56,12 @@ module RETerm
         raise RuntimeError, "should not be activated"
       end
 
+      # This method is invoked when component loses focus
+      # (when navigating to another component, window closed, etc).
+      # Subclasses may override to hide / cleanup resources
+      def deactivate!
+      end
+
       attr_writer :highlight_focus
 
       # Return boolean indicating if this component should

@@ -77,6 +77,11 @@ module RETerm
       r
     end
 
+    def deactivate!
+      component.activate [CDK::KEY_ESC]
+      dispatch :deactivated
+    end
+
     # Return stored value of cdk component
     def value
       component.getValue
