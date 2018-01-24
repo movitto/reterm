@@ -12,6 +12,7 @@ require 'reterm/mixins/component_input'
 require 'reterm/mixins/nav_input'
 require 'reterm/mixins/cdk_component'
 require 'reterm/mixins/item_helpers'
+require 'reterm/mixins/key_bindings'
 require 'reterm/mixins/button_helpers'
 require 'reterm/mixins/log_helpers'
 
