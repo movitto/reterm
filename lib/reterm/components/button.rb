@@ -14,11 +14,16 @@ module RETerm
       end
 
       def requested_rows
-        3
+        2
       end
 
       def requested_cols
-        @title.size
+        @title.size + 1
+      end
+
+      def activate!
+        dispatch :clicked
+        deactivate!
       end
 
       private
