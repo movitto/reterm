@@ -51,6 +51,10 @@ module RETerm
       component.draw([])
     end
 
+    def erase
+      component.erase
+    end
+
     # CDK components may be activated
     def activatable?
       true
