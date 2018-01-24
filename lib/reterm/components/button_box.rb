@@ -36,6 +36,8 @@ module RETerm
 
       def close!
         widget.erase
+        widget.finalize!
+
         window.erase
         window.finalize!
       end
@@ -92,7 +94,7 @@ module RETerm
           return true
         end
 
-        widget.bind_key(CDK::KEY_TAB, widget_cb) if widget.cdk?
+        widget.bind_key(CDK::KEY_TAB, widget_cb)
 
         w
       end
