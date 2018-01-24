@@ -87,8 +87,10 @@ module RETerm
       component.getValue
     end
 
-    # Bind key to specified callback
-    def bind_key(key, kcb)
+    # Override bind_key to use cdk bindings mechanism
+    def bind_key(key, kcb=nil, &bl)
+      kcb = bl if kcb.nil? && !bl.nil?
+
       cb = lambda do |cdktype, widget, component, key|
         kcb.call component, key
       end
