@@ -57,7 +57,7 @@ module RETerm
     private
 
     def next_ch(input)
-      return window.sync_getch if input.empty?
+      return sync_getch if input.empty?
       input.shift
     end
 

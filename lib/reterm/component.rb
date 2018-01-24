@@ -3,6 +3,7 @@ module RETerm
   # Subclasses each implement a specific UI artifact.
   class Component
     include LogHelpers
+    include KeyBindings
 
       attr_accessor :window
 
@@ -94,6 +95,13 @@ module RETerm
       # Overridden by CDK components
       def cdk?
         false
+      end
+
+      def sync_getch
+        c = window.sync_getch
+        c = nil if key_bound?(c) &&
+                   invoke_key_bindings(c)
+        c
       end
   end # class Component
 end # module RETerm
