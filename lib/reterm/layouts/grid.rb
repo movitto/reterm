@@ -28,10 +28,25 @@ module RETerm
         x2 >= window.cols || y2 >= window.rows
       end
 
+      def valid_input?(ch, from_parent)
+        if     UP_CONTROLS.include?(ch)
+          return focusable.any? { |f| f.window.y < focused.window.y }
+
+        elsif  DOWN_CONTROLS.include?(ch)
+          return focusable.any? { |f| f.window.y > focused.window.y }
+
+        elsif  LEFT_CONTROLS.include?(ch)
+          focusable.any? { |f| f.window.x < focused.window.x }
+
+        elsif RIGHT_CONTROLS.include?(ch)
+          focusable.any? { |f| f.window.x > focused.window.x }
+        end
+      end
+
       # Cycle through components child position on grid
       def next_focus(ch)
         f = nil
-           if    UP_CONTROLS.include?(ch)
+        if     UP_CONTROLS.include?(ch)
           f = focusable.select { |f| f.window.y < focused.window.y }.first
 
         elsif  DOWN_CONTROLS.include?(ch)
