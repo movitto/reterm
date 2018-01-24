@@ -35,13 +35,17 @@ module RETerm
 
       private
 
+      def disp_type
+        :MIXED
+      end
+
       def _component
         CDK::ENTRY.new(window.cdk_scr,            # cdkscreen,
                        CDK::CENTER, CDK::CENTER,  # xpos, ypos
                        @title, @label,            # title, label
                        Ncurses::A_NORMAL,         # field attribute (eg typed chars)
-                       '.',                       # filler char
-                       :MIXED,                    # display type
+                       '.'.ord,                   # filler char
+                       disp_type,                 # display type
                        window.cols-@label.size-5, # field width
                        0, 256,                    # min/max len
                        false, false)              # box, shadow
