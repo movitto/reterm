@@ -62,7 +62,7 @@ module RETerm
       ch = handle_focused unless nav_select
 
       # Repeat until quit-sequence detected or app-shutdown
-      while(!QUIT_CONTROLS.include?(ch) && !shutdown?)
+      while(!QUIT_CONTROLS.include?(ch) && !shutdown? && !deactivate?)
 
         # Navigate to the specified component (nav_select)
         if self.nav_select 
@@ -87,7 +87,9 @@ module RETerm
         end
 
         return ch unless sanitize_focus!(from_parent)
-        ch = handle_focused unless nav_select
+        ch = handle_focused unless nav_select ||
+                                   shutdown?  ||
+                                   deactivate?
       end
 
       ch
@@ -135,13 +137,13 @@ module RETerm
 
       update_focus
 
-      focused.activate!(ENTER_CONTROLS.first) if focused.activate_focus?
+      focused.activate! if focused.activate_focus?
 
       if focused.kind_of?(Layout)
         ch = focused.handle_input(true)
 
-      else
-        ch = window.sync_getch
+      elsif !deactivate? && !nav_select
+        ch = sync_getch
       end
 
       ch
