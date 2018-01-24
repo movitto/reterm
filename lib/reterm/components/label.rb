@@ -26,6 +26,12 @@ module RETerm
         padding = " " * [0, window.cols - @text.size-2].max
         window.mvaddstr(0, 0, @text + padding)
       end
+
+      def erase
+        padding = " " * [0, window.cols - @text.size-2].max
+        window.mvaddstr(0, 0, " " * (@text + padding).size)
+        window.refresh
+      end
     end # Label
   end # module Components
 end # module RETerm
