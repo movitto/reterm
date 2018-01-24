@@ -8,6 +8,7 @@ module RETerm
 
       def initialize(args={})
         self.highlight_focus = args[:highlight_focus] if args.key?(:highlight_focus)
+        self.activate_focus  = args[:activate_focus]  if args.key?(:activate_focus)
       end
 
       # This method is invoked when adding component to layout
@@ -60,11 +61,13 @@ module RETerm
       # Return boolean indicating if this component should
       # be highlighted on focus (default true)
       def highlight_focus?
-        !defined?(:@highlight_focus) || @highlight_focus
+        !defined?(@highlight_focus) || @highlight_focus
       end
 
+      attr_writer :activate_focus
+
       def activate_focus?
-        false
+        defined?(@activate_focus) && @activate_focus
       end
 
       # Return extra padding to be given to component
