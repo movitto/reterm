@@ -22,7 +22,7 @@ module RETerm
       end
 
       def requested_cols
-        lines.max { |l1, l2| l1.size <=> l2.size } + 1
+        lines.max { |l1, l2| l1.size <=> l2.size }.size + 1
       end
 
       def draw!
