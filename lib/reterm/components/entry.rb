@@ -4,6 +4,8 @@ module RETerm
     class Entry < Component
       include CDKComponent
 
+      attr_accessor :title
+
       # Initialize the Entry component
       #
       # @param [Hash] args entry params
@@ -40,15 +42,23 @@ module RETerm
       end
 
       def _component
-        CDK::ENTRY.new(window.cdk_scr,            # cdkscreen,
-                       CDK::CENTER, CDK::CENTER,  # xpos, ypos
-                       @title, @label,            # title, label
-                       Ncurses::A_NORMAL,         # field attribute (eg typed chars)
-                       '.'.ord,                   # filler char
-                       disp_type,                 # display type
-                       window.cols-@label.size-5, # field width
-                       0, 256,                    # min/max len
-                       false, false)              # box, shadow
+        c = CDK::ENTRY.new(window.cdk_scr,            # cdkscreen,
+                           CDK::CENTER, CDK::CENTER,  # xpos, ypos
+                           @title, @label,            # title, label
+                           Ncurses::A_NORMAL,         # field attribute (eg typed chars)
+                           '.'.ord,                   # filler char
+                           disp_type,                 # display type
+                           window.cols-@label.size-5, # field width
+                           0, 256,                    # min/max len
+                           false, false)              # box, shadow
+        e = self
+        callback = lambda do |cdktype, entry, component, key|
+          component.dispatch :entry, key
+        end
+
+        c.setPostProcess(callback, self)
+
+        c
       end
     end # Entry
   end # module Components
