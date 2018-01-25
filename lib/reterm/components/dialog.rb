@@ -20,6 +20,18 @@ module RETerm
         @buttons = ["</B/24>OK", "</B16>Cancel"] if @buttons.empty?
       end
 
+      # Client may invoke this to
+      #   - create dialog and window
+      #   - activate it
+      #   - close / cleanup
+      def self.show(args={})
+        dlg = self.new args
+        win = Window.new
+        win.component = dlg
+        dlg.activate!
+        dlg.close!
+      end
+
       def requested_rows
         5
       end
