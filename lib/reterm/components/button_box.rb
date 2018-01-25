@@ -42,8 +42,6 @@ module RETerm
         window.finalize!
       end
 
-# TODO autocreate window if not specified?
-
       def window=(win)
         super(win)
         cw = win.create_child :rows => widget.requested_rows,
@@ -62,6 +60,10 @@ module RETerm
           super
         end
 
+        @buttons[component.current_button]
+      end
+
+      def selected
         @buttons[component.current_button]
       end
 
@@ -88,13 +90,16 @@ module RETerm
         w.setULchar(Ncurses::ACS_LTEE)
         w.setURchar(Ncurses::ACS_RTEE)
 
-        # bind tab key to button box
+        # bind tab/left/right key to button box
         widget_cb = lambda do |widget, key|
           w.inject(key)
           return true
         end
 
+        # TODO allow specific keys overriding of specific keys to be disabled
         widget.bind_key(CDK::KEY_TAB, widget_cb)
+        widget.bind_key(Ncurses::KEY_LEFT, widget_cb)
+        widget.bind_key(Ncurses::KEY_RIGHT, widget_cb)
 
         w
       end
