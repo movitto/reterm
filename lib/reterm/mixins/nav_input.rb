@@ -6,35 +6,15 @@ module RETerm
   # components.
   module NavInput
     include MouseInput
-
-    # Key which if pressed causes the navigation component
-    # to lose focus / become deactivated
-    QUIT_CONTROLS  = [27, 'q'.ord, 'Q'.ord] # 27 = ESC
-
-    # Key if pressed focuses on / activates a component
-    ENTER_CONTROLS = [10] # 10 = enter , space
-
-    # Up navigation keys
-    UP_CONTROLS    = ['k'.ord, 'K'.ord, Ncurses::KEY_UP]
-
-    # Down navigation keys
-    DOWN_CONTROLS  = ['j'.ord, 'J'.ord, Ncurses::KEY_DOWN]
-
-    # Left navigation keys
-    LEFT_CONTROLS  = ['h'.ord, 'H'.ord, Ncurses::KEY_BACKSPACE,
-                                        Ncurses::KEY_BTAB,
-                                        Ncurses::KEY_LEFT]
-
-    # Right navigation keys
-    RIGHT_CONTROLS = ['l'.ord, 'L'.ord, "\t".ord, Ncurses::KEY_RIGHT]
-
-    # All movement keys
-    MOVEMENT_CONTROLS = UP_CONTROLS   + DOWN_CONTROLS +
-                        LEFT_CONTROLS + RIGHT_CONTROLS
+    include NavControls
 
     # Used internally to specify component
     # which we should navigate to
     attr_accessor :nav_select
+
+    # Used internally to specify which movement
+    # command we should follow
+    attr_accessor :ch_select
 
     # Return children which are focusabled/activable
     def focusable
@@ -52,7 +32,6 @@ module RETerm
       true
     end
 
-
     # Helper to be internally invoked by navigation component
     # on activation
     def handle_input(from_parent=false)
@@ -61,8 +40,8 @@ module RETerm
       # focus on first component
       ch = handle_focused unless nav_select
 
-      # Repeat until quit-sequence detected or app-shutdown
-      while(!QUIT_CONTROLS.include?(ch) && !shutdown? && !deactivate?)
+      # Repeat until quit
+      until quit_nav?(ch)
 
         # Navigate to the specified component (nav_select)
         if self.nav_select 
@@ -137,13 +116,19 @@ module RETerm
 
       update_focus
 
-      focused.activate! if focused.activate_focus?
+      if focused.activate_focus?
+        focused.activate!
 
-      if focused.kind_of?(Layout)
+      elsif focused.kind_of?(Layout)
         ch = focused.handle_input(true)
 
       elsif !deactivate? && !nav_select
         ch = sync_getch
+      end
+
+      if self.ch_select
+        ch = self.ch_select
+        self.ch_select = nil
       end
 
       ch
