@@ -441,6 +441,20 @@ module RETerm
       @win.attroff(Ncurses::A_BOLD)
     end
 
+    # Enable reverse formatting
+    def reverse!
+      @win.attron(Ncurses::A_REVERSE)
+      return unless block_given?
+
+      yield
+      @win.attroff(Ncurses::A_REVERSE)
+    end
+
+    # Disabled reverse formatting
+    def no_reverse!
+      @win.attroff(Ncurses::A_REVERSE)
+    end
+
     # Return bool indiciating if colors are set
     def colored?
       !!@colors
