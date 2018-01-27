@@ -35,7 +35,7 @@ module RETerm
       Ncurses::start_color
       Ncurses::noecho
       Ncurses::cbreak
-      Ncurses::curs_set(0)
+      Ncurses::curs_set(0)  # TODO toggleable
       Ncurses::keypad(stdscr, true)
       #Ncurses::set_escdelay(100) # TODO
 

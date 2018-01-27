@@ -19,6 +19,7 @@ require 'reterm/components/dial'
 require 'reterm/components/rocker'
 require 'reterm/components/vslider'
 require 'reterm/components/label'
+require 'reterm/components/revealing_label'
 require 'reterm/components/ascii_text'
 require 'reterm/components/image'
 

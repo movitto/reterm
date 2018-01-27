@@ -8,7 +8,7 @@ module RETerm
       # Initialize the Label component
       #
       # @param [Hash] args label params
-      # @option args [String] :text text of button
+      # @option args [String] :text text of the label
       def initialize(args={})
         super
         @text    = args[:text] || ""
