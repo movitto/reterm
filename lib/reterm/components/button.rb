@@ -26,6 +26,10 @@ module RETerm
         deactivate!
       end
 
+      def click!
+        activate!
+      end
+
       private
 
       def callback
