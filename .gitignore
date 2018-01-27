@@ -2,3 +2,5 @@
 .yardoc
 doc
 patches
+test/verify
+vendor
