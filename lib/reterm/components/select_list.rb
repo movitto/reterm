@@ -22,7 +22,7 @@ module RETerm
       end
 
       def requested_cols
-        [@title.size+2, max_item_size + 2].max
+        [@title.size, max_item_size].max + 2
       end
 
       def current

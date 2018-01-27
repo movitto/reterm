@@ -18,7 +18,7 @@ module RETerm
       end
 
       def requested_rows
-        @items.size + 1
+        2 + @items.size
       end
 
       def requested_cols
@@ -38,6 +38,10 @@ module RETerm
 
       def selected
         @items[component.getCurrentItem]
+      end
+
+      def current
+        selected
       end
 
       def activate!(*input)
