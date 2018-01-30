@@ -110,8 +110,8 @@ module RETerm
       if h.key?(:component)
         c = h[:component]
 
-        h.merge! :rows => c.requested_rows + c.extra_padding,
-                 :cols => c.requested_cols + c.extra_padding
+        h = {:rows => c.requested_rows + c.extra_padding,
+             :cols => c.requested_cols + c.extra_padding}.merge(h)
       end
 
       raise ArgumentError, "must specify x/y" unless h.key?(:x) &&
