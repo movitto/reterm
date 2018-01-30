@@ -34,7 +34,9 @@ module RETerm
         @current_index = nil
       end
 
-      # ...
+      def empty?
+        @text.nil? || @text.length == 0
+      end
 
       def lines
         @lines ||= text.split("\n")
@@ -45,7 +47,8 @@ module RETerm
       end
 
       def requested_cols
-        text.max { |l1, l2| l1.size <=> l2.size }.size + 1
+        empty? ? 1 :
+        lines.max { |l1, l2| l1.size <=> l2.size }.size + 1
       end
 
       def sync!
@@ -75,15 +78,26 @@ module RETerm
         return unless @draw_next
         @draw_next = false
 
+        current = ((lines.size > @current_line) &&
+                   (lines[@current_line].size > @current_index)) ?
+                    lines[@current_line][@current_index] :
+                    ""
+
+        dispatch :start_reveal if @current_line  == 0 &&
+                                  @current_index == 0
+
         @timestamp = DateTime.now
         window.mvaddstr(@current_line  + 1,
                         @current_index + 1,
-                        lines[@current_line][@current_index])
+                        current)
+
+        dispatch :revealed_char, current
 
         set_next
       end
 
       def set_next
+        return if empty?
         @current_index += 1
 
         if @current_index >= lines[@current_line].size
@@ -91,7 +105,10 @@ module RETerm
           @current_line += 1
         end
 
-        @current_line = 0 if @current_line >= lines.size
+        if @current_line >= lines.size
+          @current_line = 0
+          dispatch :revealed
+        end
       end
 
       def erase
