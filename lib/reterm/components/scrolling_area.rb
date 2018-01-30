@@ -4,6 +4,8 @@ module RETerm
     class ScrollingArea < Component
       include CDKComponent
 
+      attr_accessor :title, :lines
+
       # Initialize the ScrollingArea component
       #
       # @param [Hash] args scrolling area params
