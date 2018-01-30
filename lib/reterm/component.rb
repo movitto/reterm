@@ -2,6 +2,7 @@ module RETerm
   # A Component is a generic widget container associated with a window.
   # Subclasses each implement a specific UI artifact.
   class Component
+    include EventDispatcher
     include LogHelpers
     include KeyBindings
 

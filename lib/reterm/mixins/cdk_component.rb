@@ -1,8 +1,6 @@
 module RETerm
   # Mixin used by CDK based component defining cdk-specific helpers
   module CDKComponent
-    include EventDispatcher
-
     # Boolean indicating this component is a cdk component
     def cdk?
       true
