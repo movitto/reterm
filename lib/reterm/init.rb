@@ -22,6 +22,7 @@ module RETerm
   #
   def init_reterm(opts={}, &bl)
     @@shutdown = false
+    @@reterm_opts = opts
 
     begin
       Terminal.load # XXX: not sure why but loading terminal
@@ -35,12 +36,12 @@ module RETerm
       Ncurses::start_color
       Ncurses::noecho
       Ncurses::cbreak
-      Ncurses::curs_set(0)  # TODO toggleable
+      disable_cursor! unless !!opts[:cursor]
       Ncurses::keypad(stdscr, true)
       #Ncurses::set_escdelay(100) # TODO
 
       no_mouse = opts[:nomouse] || (opts.key?(:mouse) && !opts[:mouse])
-      Ncurses::mousemask(Ncurses::ALL_MOUSE_EVENTS | Ncurses::REPORT_MOUSE_POSITION, []) unless no_mouse
+      Ncurses::mousemask(MouseInput::ALL_EVENTS, []) unless no_mouse
 
       track_resize if opts[:resize]
 
@@ -82,11 +83,57 @@ module RETerm
     Ncurses.doupdate
   end
 
+  # Return copy of options specified to init_reterm
+  def reterm_opts
+    @@_reterm_opts ||= Hash[@@reterm_opts]
+  end
+
   # XXX Ncurses is exposed so that users
   # may employ any constants if desired.
   # This should not be needed though and
   # is discouraged to maintain portability
   NC = Ncurses
+
+  ###
+
+  # Cursor
+
+  def cursor?
+    !(@@cursor_disabled ||= false)
+  end
+
+  def disable_cursor!
+    # store cursor state
+    o = cursor?
+
+    # set cursor state
+    @@cursor_disabled = true
+    Ncurses::curs_set(0)
+
+    # invoke block if given
+    return unless block_given?
+    yield
+
+    # restore cursor state after block
+    enable_cursor! if o
+  end
+
+  def enable_cursor!
+    # store cursor state
+    o = cursor?
+
+    # set cursor state
+    @@cursor_disabled = false
+    Ncurses::curs_set(1)
+
+    # invoke block if given
+    return unless block_given?
+    yield
+
+    # restore cursor state after block
+    disable_cursor! unless o
+  end
+
 
   ###############################
 

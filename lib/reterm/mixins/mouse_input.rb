@@ -1,5 +1,8 @@
 module RETerm
   module MouseInput
+    ALL_EVENTS = Ncurses::ALL_MOUSE_EVENTS |
+                 Ncurses::REPORT_MOUSE_POSITION
+
     MOUSE_MAP = {
       :PRESSED        => :pressed,
       :RELEASED       => :released,
@@ -7,6 +10,10 @@ module RETerm
       :DOUBLE_CLICKED => :dclick,
       :TRIPLE_CLICKED => :tclick,
     }
+
+    def mouse_paste?
+      !!reterm_opts[:mouse_paste]
+    end
 
     # May be overridden in subclass, invoked when
     # the user interacts with a button.
@@ -23,6 +30,15 @@ module RETerm
 
       mev = Ncurses::MEVENT.new
       Ncurses.getmouse(mev)
+
+      if mev.bstate == Ncurses::BUTTON2_CLICKED && mouse_paste?
+        # TODO grab clipboard buffer & return character array
+        #   (need to handle seperately in invoker)
+        #
+        # use https://github.com/janlelis/clipboard
+        # but note this requires external programs!
+      end
+
       # TODO 5 button support (requiest "--enable-ext-mouse" ncurses flag
       # which is not specified in many major distrubtions)
       1.upto(4).each { |b|
