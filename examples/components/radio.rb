@@ -14,4 +14,4 @@ init_reterm {
   value = radio.activate!
 }
 
-puts "Button Value: #{value}"
+puts "Radio Value: #{value}"

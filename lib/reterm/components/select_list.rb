@@ -25,6 +25,10 @@ module RETerm
         [@title.size, max_item_size].max + 2
       end
 
+      def clear!
+        component.setCurrentItem(0)
+      end
+
       def current
         @items[component.getCurrentItem]
       end

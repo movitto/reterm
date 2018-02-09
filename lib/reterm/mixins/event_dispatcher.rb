@@ -9,6 +9,8 @@ module RETerm
       @event_handlers[e].each { |eh|
         eh.call h
       } if @event_handlers.key?(e)
+
+      nil # return last handler return value or perhaps all ?
     end
 
     def handle(e, &bl)

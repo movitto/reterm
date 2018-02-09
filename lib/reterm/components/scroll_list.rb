@@ -36,6 +36,10 @@ module RETerm
         end
       end
 
+      def clear!
+        component.setCurrentItem(0)
+      end
+
       def selected
         @items[component.getCurrentItem]
       end
@@ -47,6 +51,7 @@ module RETerm
       def activate!(*input)
         i = super
         return nil unless normal_exit?
+        dispatch(:selected)
         @items[i]
       end
 
@@ -64,7 +69,8 @@ module RETerm
                         true, false)                 # box, shadow
 
         pp = lambda do |cdktype, list, scroll_list, key|
-          scroll_list.dispatch(:selected)
+          scroll_list.dispatch(:entry, key)
+          scroll_list.dispatch(:changed)
         end
 
         c.setPostProcess(pp, self)

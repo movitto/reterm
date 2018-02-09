@@ -71,6 +71,11 @@ module RETerm
         draw!
       end
 
+      def reset!
+        @current_line  = 0
+        @current_index = 0
+      end
+
       def draw!
         @current_line  ||= 0
         @current_index ||= 0

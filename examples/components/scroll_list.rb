@@ -12,7 +12,7 @@ init_reterm {
   list = Components::ScrollList.new :title => "Select Item",
                                     :items => ['A', 'B', 'C']
 
-  list.handle("selected") {
+  list.handle("changed") {
     #puts "Selected #{list.selected}"
   }
 
