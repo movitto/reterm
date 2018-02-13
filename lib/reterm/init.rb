@@ -32,13 +32,15 @@ module RETerm
                     #      without a 'reset' (see below).
                     #      So just preload terminal info here.
 
+      # shorten up the esc delay time
+      ENV["ESCDELAY"] = 100.to_s
+
       stdscr = Ncurses::initscr
       Ncurses::start_color
       Ncurses::noecho
       Ncurses::cbreak
       disable_cursor! unless !!opts[:cursor]
       Ncurses::keypad(stdscr, true)
-      #Ncurses::set_escdelay(100) # TODO
 
       no_mouse = opts[:nomouse] || (opts.key?(:mouse) && !opts[:mouse])
       Ncurses::mousemask(MouseInput::ALL_EVENTS, []) unless no_mouse
