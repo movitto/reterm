@@ -73,7 +73,7 @@ module RETerm
         @current_color  = 0 if @current_color >= choices.size
 
         ColorPair.register(choices[@current_color],
-                           ColorPair.default_bg)
+                           ColorPair.default_bkgd)
       end
 
       def next_symbol

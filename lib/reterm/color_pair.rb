@@ -26,8 +26,36 @@ module RETerm
                     }
     end
 
+    def self.default_bkgd
+      @dbkgd ||= Ncurses::WINDOW.new(1, 1, 1, 1).getbkgd
+    end
+
+    def self.default_bkgd_char
+      @dbkgdch ||= default_bkgg & Ncurses::A_CHARTEXT
+    end
+
+    def self.default_bkgd_color
+      @dbkgdco ||= ((default_bkgd & Ncurses::A_COLOR) >> 8)
+    end
+
+    def self.default_fg
+      @dfg ||= begin
+        f, b = [], []
+        Ncurses::pair_content(default_bkgd_color, f, b)
+        f.first
+      end
+    end
+
     def self.default_bg
-      @dbg ||= Ncurses::WINDOW.new(1, 1, 1, 1).getbkgd
+      @dbg ||= begin
+        f, b = [], []
+        Ncurses::pair_content(default_bkgd_color, f, b)
+        b.first
+      end
+    end
+
+    def self.default_color
+      @dcp ||= register default_fg, default_bg
     end
 
     # Reserves and returns block of N colors

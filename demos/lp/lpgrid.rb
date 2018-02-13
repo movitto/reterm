@@ -30,21 +30,21 @@ module RETerm
         ColorPair.define colors[14], 170,  255, 0 # red mid  green high
         ColorPair.define colors[15], 255,  255, 0 # red high green high
 
-        ColorPair.register colors[0],  ColorPair.default_bg, "r0g0"
-        ColorPair.register colors[1],  ColorPair.default_bg, "r1g0"
-        ColorPair.register colors[2],  ColorPair.default_bg, "r2g0"
-        ColorPair.register colors[3],  ColorPair.default_bg, "r3g0"
-        ColorPair.register colors[4],  ColorPair.default_bg, "r0g1"
-        ColorPair.register colors[5],  ColorPair.default_bg, "r1g1"
-        ColorPair.register colors[6],  ColorPair.default_bg, "r2g1"
-        ColorPair.register colors[8],  ColorPair.default_bg, "r0g2"
-        ColorPair.register colors[9],  ColorPair.default_bg, "r1g2"
-        ColorPair.register colors[10], ColorPair.default_bg, "r2g2"
-        ColorPair.register colors[11], ColorPair.default_bg, "r3g2"
-        ColorPair.register colors[12], ColorPair.default_bg, "r0g3"
-        ColorPair.register colors[13], ColorPair.default_bg, "r1g3"
-        ColorPair.register colors[14], ColorPair.default_bg, "r2g3"
-        ColorPair.register colors[15], ColorPair.default_bg, "r3g3"
+        ColorPair.register colors[0],  ColorPair.default_bkgd, "r0g0"
+        ColorPair.register colors[1],  ColorPair.default_bkgd, "r1g0"
+        ColorPair.register colors[2],  ColorPair.default_bkgd, "r2g0"
+        ColorPair.register colors[3],  ColorPair.default_bkgd, "r3g0"
+        ColorPair.register colors[4],  ColorPair.default_bkgd, "r0g1"
+        ColorPair.register colors[5],  ColorPair.default_bkgd, "r1g1"
+        ColorPair.register colors[6],  ColorPair.default_bkgd, "r2g1"
+        ColorPair.register colors[8],  ColorPair.default_bkgd, "r0g2"
+        ColorPair.register colors[9],  ColorPair.default_bkgd, "r1g2"
+        ColorPair.register colors[10], ColorPair.default_bkgd, "r2g2"
+        ColorPair.register colors[11], ColorPair.default_bkgd, "r3g2"
+        ColorPair.register colors[12], ColorPair.default_bkgd, "r0g3"
+        ColorPair.register colors[13], ColorPair.default_bkgd, "r1g3"
+        ColorPair.register colors[14], ColorPair.default_bkgd, "r2g3"
+        ColorPair.register colors[15], ColorPair.default_bkgd, "r3g3"
 
         # TODO option for on/off glifs
       end
