@@ -11,6 +11,7 @@ module RETerm
       def initialize(args={})
         self.highlight_focus = args[:highlight_focus] if args.key?(:highlight_focus)
         self.activate_focus  = args[:activate_focus]  if args.key?(:activate_focus)
+        init_cdk(args) if cdk?
       end
 
       # This method is invoked when adding component to layout

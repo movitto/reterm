@@ -1,6 +1,15 @@
 module RETerm
   # Mixin used by CDK based component defining cdk-specific helpers
   module CDKComponent
+    def init_cdk(args={})
+      self.title_attrib = args[:title_attrib] if args.key?(:title_attrib)
+    end
+
+    def title_attrib=(a)
+      @title_attrib = a
+      component.title_attrib = a if defined?(@component)
+    end
+
     # Boolean indicating this component is a cdk component
     def cdk?
       true
@@ -18,6 +27,7 @@ module RETerm
         c = _component
         c.setBackgroundColor("</#{@colors.id}>") if colored?
         c.timeout(SYNC_TIMEOUT) if sync_enabled? # XXX
+        c.title_attrib = @title_attrib if @title_attrib
         c
       end
     end
