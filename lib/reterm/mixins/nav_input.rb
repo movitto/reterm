@@ -114,6 +114,7 @@ module RETerm
     def handle_focused
       ch = nil
 
+      focused.dispatch :focused
       update_focus
 
       if focused.activate_focus?
@@ -137,6 +138,7 @@ module RETerm
     # Internal helper, logic invoked when a component loses focus
     def remove_focus
       focused.window.no_border!
+      focused.dispatch :unfocused
     end
 
     # Internal helper, navigate to selected component under current
