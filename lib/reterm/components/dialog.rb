@@ -4,6 +4,11 @@ module RETerm
     class Dialog < Component
       include CDKComponent
 
+      BUTTONS = {
+        :ok        => ["</B/24>OK"],
+        :ok_cancel => ["</B/24>OK", "</B16>Cancel"]
+      }
+
       # Initialize the Dialog component
       #
       # @param [Hash] args dialog params
@@ -17,7 +22,7 @@ module RETerm
         @message = [args[:message]].flatten.compact
         @buttons = [args[:buttons]].flatten.compact
 
-        @buttons = ["</B/24>OK", "</B16>Cancel"] if @buttons.empty?
+        @buttons = BUTTONS[:ok_cancel] if @buttons.empty?
       end
 
       # Client may invoke this to
