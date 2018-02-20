@@ -151,8 +151,9 @@ module RETerm
       if self.children.include?(ns)
         remove_focus
         @focus = focusable.index(ns)
-        update_focus
-        focused.activate!
+        #handle_focused
+        #update_focus
+        #focused.activate!
 
       # not a direct child, navigate down to layout
       # containing it
