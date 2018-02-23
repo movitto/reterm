@@ -12,11 +12,7 @@ init_reterm {
   i = 0
   label = Components::Label.new :text => i.to_s + "..."
 
-  Components::Splash.show(:widget => label,
-                          :rows   => 20,
-                          :cols   => 30,
-                          :x      => 10,
-                          :y      => 10) {
+  Components::Splash.show(:widget => label){
     i += 1
     label.text = i.to_s + "..."
     i > 10

@@ -24,9 +24,10 @@ module RETerm
       #   - close / cleanup
       def self.show(args={}, &bl)
         splash = self.new args.merge(:callback => bl)
-        win    = Window.new args
-        win.component = splash
-        win.border!
+        win    = Window.new args.merge(:component => splash,
+                                       :x         => :center,
+                                       :y         => :center)
+        #win.component = splash
         splash.activate!
         update_reterm(true)
         splash.close!
@@ -46,6 +47,9 @@ module RETerm
 
         window.erase
         window.finalize!
+
+        # get rid of all outstanding input
+        flush_input
       end
 
       def sync!
@@ -53,14 +57,14 @@ module RETerm
       end
 
       def draw!
+        window.border!
         widget.draw!
-        update_reterm
       end
 
       def window=(win)
         super(win)
         cw = win.create_child :rows => widget.requested_rows,
-                              :cols => [widget.requested_cols, requested_cols].max,
+                              :cols => widget.requested_cols,
                               :x    => 1,
                               :y    => 1
         raise ArgumentError, "could not create child" if cw.win.nil?
@@ -72,6 +76,7 @@ module RETerm
           window.draw!
 
           sleep SYNC_TIMEOUT.to_f / 1000
+          run_sync!
           @terminate = !!callback.call
         end
       end

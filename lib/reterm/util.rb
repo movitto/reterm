@@ -113,4 +113,9 @@ module RETerm
   def file_append(f, t)
     File.open(f, "a") { |f| f.write t }
   end
+
+  # Flushes all input queues
+  def flush_input
+    Ncurses.flushinp
+  end
 end # module RETerm
