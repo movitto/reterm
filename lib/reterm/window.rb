@@ -366,6 +366,13 @@ module RETerm
       component.component.erase if cdk?
     end
 
+    # Erases window screen by overwriting it with blanks
+    def erase_scr
+      0.upto(rows) { |r|
+        mvaddstr(r, 1, " " * cols)
+      }
+    end
+
     # Refresh / resynchronize window and all children
     def refresh
       @win.refresh

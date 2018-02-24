@@ -17,6 +17,10 @@ module RETerm
         @items  = args[:items] || []
       end
 
+      def quit_on_enter=(v)
+        component.quit_on_enter = v
+      end
+
       def requested_rows
         2 + @items.size
       end

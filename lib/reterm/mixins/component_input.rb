@@ -8,7 +8,9 @@ module RETerm
 
     # Key which if pressed cause the component to
     # lose focus / become deactivated
-    QUIT_CONTROLS = [10, 27] # 10 = enter, 27 = ESC
+    QUIT_CONTROLS = [10, 27, Ncurses::KEY_ENTER] # 10 = enter, 27 = ESC
+
+    ENTER_CONTROLS = [10, Ncurses::KEY_ENTER] # quit controls with out esc
 
     # Keys if pressed invoked the increment operation
     INC_CONTROLS  = ['+'.ord, Ncurses::KEY_UP, Ncurses::KEY_RIGHT]
