@@ -5,7 +5,7 @@ module RETerm
     QUIT_CONTROLS  = [27, 'q'.ord, 'Q'.ord] # 27 = ESC
 
     # Key if pressed focuses on / activates a component
-    ENTER_CONTROLS = [10] # 10 = enter , space
+    ENTER_CONTROLS = [10, Ncurses::KEY_ENTER] # 10 = enter , space
 
     # Up navigation keys
     UP_CONTROLS    = ['k'.ord, 'K'.ord, Ncurses::KEY_UP]

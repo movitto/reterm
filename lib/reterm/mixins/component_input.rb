@@ -3,22 +3,11 @@ module RETerm
   # components. 'In House' components included in the project
   # may used this to standarding their usage.
   module ComponentInput
+    include CommonControls
+    include CommonKeys
+
     # TODO include / incorporate MouseInput mixin
     # (scroll sliders/dials, click buttons, etc) ...
-
-    # Key which if pressed cause the component to
-    # lose focus / become deactivated
-    QUIT_CONTROLS = [10, 27, Ncurses::KEY_ENTER] # 10 = enter, 27 = ESC
-
-    ENTER_CONTROLS = [10, Ncurses::KEY_ENTER] # quit controls with out esc
-
-    # Keys if pressed invoked the increment operation
-    INC_CONTROLS  = ['+'.ord, Ncurses::KEY_UP, Ncurses::KEY_RIGHT]
-
-    # Keys if pressed invoked the decrement operation
-    DEC_CONTROLS  = ['-'.ord, Ncurses::KEY_DOWN, Ncurses::KEY_LEFT]
-
-    # TODO page/scroll controls
 
     # May be overridden in subclass, invoked when the user requests
     # an 'increment'
@@ -30,15 +19,33 @@ module RETerm
     def on_dec
     end
 
+    # May be overridden in subclass, invoked when the user inputs
+    # the enter key (unless quit_on_enter is true)
+    def on_enter
+    end
+
     # Helper to be internally invoked by component on activation
     def handle_input(*input)
-      while(!QUIT_CONTROLS.include?((ch = next_ch(input))) && !shutdown?)
+      while ch = next_ch(input)
+        quit  = QUIT_CONTROLS.include?(ch)
+        enter = ENTER_CONTROLS.include?(ch)
+        inc   = INC_CONTROLS.include?(ch)
+        dec   = DEC_CONTROLS.include?(ch)
+
+        break if shutdown? ||
+                (quit && (!enter || quit_on_enter?))
+
+
         if key_bound?(ch)
           invoke_key_bindings(ch)
 
-        elsif INC_CONTROLS.include?(ch)
+        elsif enter
+          on_enter
+
+        elsif inc
           on_inc
-        elsif DEC_CONTROLS.include?(ch)
+
+        elsif dec
           on_dec
         end
       end

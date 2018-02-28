@@ -8,6 +8,8 @@ require 'reterm/color_pair'
 
 require 'reterm/mixins/event_dispatcher'
 require 'reterm/mixins/mouse_input'
+require 'reterm/mixins/common_controls'
+require 'reterm/mixins/common_keys'
 require 'reterm/mixins/component_input'
 require 'reterm/mixins/nav_controls'
 require 'reterm/mixins/nav_input'
