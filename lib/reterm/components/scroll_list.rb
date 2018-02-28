@@ -5,6 +5,8 @@ module RETerm
       include CDKComponent
       include ItemHelpers
 
+      attr_reader :items
+
       # Initialize the ScrollList component
       #
       # @param [Hash] args list params
@@ -40,8 +42,12 @@ module RETerm
         end
       end
 
-      def clear!
+      def reset!
         component.setCurrentItem(0)
+      end
+
+      def empty!
+        @items.clear
       end
 
       def selected
@@ -50,6 +56,10 @@ module RETerm
 
       def current
         selected
+      end
+
+      def current_index
+        component.getCurrentItem
       end
 
       def activate!(*input)

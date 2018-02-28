@@ -25,7 +25,7 @@ module RETerm
         [@title.size, max_item_size].max + 2
       end
 
-      def clear!
+      def reset!
         component.setCurrentItem(0)
       end
 
