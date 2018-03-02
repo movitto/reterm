@@ -63,6 +63,10 @@ module RETerm
 
         elsif mev = process_mouse(ch)
           handle_mouse(mev)
+
+        else
+          dispatch(:entry, ch)
+
         end
 
         return ch unless sanitize_focus!(from_parent)

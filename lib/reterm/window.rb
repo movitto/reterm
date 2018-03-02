@@ -142,12 +142,12 @@ module RETerm
       @rows = args[:rows] ||
               (component ?
                (component.requested_rows + component.extra_padding) :
-               (Terminal.rows - 1))
+               Terminal.rows)
 
       @cols = args[:cols] ||
               (component ?
                (component.requested_cols + component.extra_padding) :
-               (Terminal.cols - 1))
+               Terminal.cols)
 
       if args[:parent]
         @parent = args[:parent]
@@ -199,8 +199,8 @@ module RETerm
       nx = 1 if x == :left
       ny = 1 if y == :top
 
-      nx = parent.cols - cols - 1 if x == :right
-      ny = parent.rows - rows - 1 if y == :bottom
+      nx = parent.cols - cols if x == :right
+      ny = parent.rows - rows if y == :bottom
 
       nx = parent.cols / 2 - cols / 2 if x == :center
       ny = parent.rows / 2 - rows / 2 if y == :center

@@ -127,11 +127,11 @@ module RETerm
       if h[:fill]
         p = parent? ? parent.window : Terminal
         if (h[:y] + h[:rows]) < p.rows
-          h[:rows] = p.rows-h[:y]-4 # FIXME: 4 = extrapadding + 1 (?)
+          h[:rows] = p.rows-h[:y]-1
         end
 
         if (h[:x] + h[:cols]) < p.cols
-          h[:cols] = p.cols-h[:x]-4
+          h[:cols] = p.cols-h[:x]-1
         end
       end
 

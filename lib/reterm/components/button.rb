@@ -13,6 +13,13 @@ module RETerm
         @title = args[:title] || ""
       end
 
+      attr_reader :title
+
+      def title=(t)
+        @title = t
+        component.setMessage(t)
+      end
+
       def requested_rows
         2
       end
