@@ -24,6 +24,10 @@ module RETerm
     def on_enter
     end
 
+    # May be overridden in subclass, invoked with every key entered
+    def on_key(ch)
+    end
+
     # Helper to be internally invoked by component on activation
     def handle_input(*input)
       while ch = next_ch(input)
@@ -35,11 +39,7 @@ module RETerm
         break if shutdown? ||
                 (quit && (!enter || quit_on_enter?))
 
-
-        if key_bound?(ch)
-          invoke_key_bindings(ch)
-
-        elsif enter
+        if enter
           on_enter
 
         elsif inc
@@ -48,7 +48,15 @@ module RETerm
         elsif dec
           on_dec
         end
+
+        if key_bound?(ch)
+          invoke_key_bindings(ch)
+        end
+
+        on_key(ch)
       end
+
+      ch
     end
 
     def bind_key(key, kcb)

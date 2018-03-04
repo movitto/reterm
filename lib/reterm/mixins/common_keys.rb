@@ -2,7 +2,10 @@ module RETerm
   module CommonKeys
     # Key which if pressed cause the component to
     # lose focus / become deactivated
-    QUIT_CONTROLS = [10, 27, Ncurses::KEY_ENTER] # 10 = enter, 27 = ESC
+    QUIT_CONTROLS = [10, 27, Ncurses::KEY_ENTER] # 10 = enter, 27 = ESC,
+
+    # \033 = CDK::KEY_ESC
+    # 343 = NCURSES::KEY_ENTER
 
     ENTER_CONTROLS = [10, Ncurses::KEY_ENTER] # quit controls with out esc
 
