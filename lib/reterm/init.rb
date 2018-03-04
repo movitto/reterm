@@ -24,6 +24,8 @@ module RETerm
     @@shutdown = false
     @@reterm_opts = opts
 
+    err = nil
+
     begin
       Terminal.load # XXX: not sure why but loading terminal
                     #      info after changing terminal settings via
@@ -49,13 +51,25 @@ module RETerm
 
       bl.call
 
-    #ensure
+    rescue => e
+      err = e
+
+    ensure
       stop_track_resize
       Ncurses.curs_set(1)
       Window.top.each { |w| w.finalize! }
       CDK::SCREEN.endCDK if cdk_enabled?
       Ncurses.endwin
       #`reset -Q` # XXX only way to guarantee a full reset (see above)
+    end
+
+    if err
+      puts "Unhandled error:"
+      puts "  " + err.to_s
+      puts err.backtrace
+              .collect { |b|
+                "    " + b
+              }.join("\n")
     end
   end
 
