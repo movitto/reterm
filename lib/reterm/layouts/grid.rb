@@ -24,8 +24,8 @@ module RETerm
                [current_rows, y1 + child[:rows]].compact.max :
                [current_rows, y1 + child.rows].max
 
-        x1 <= window.x    || y1 <= window.y ||
-        x2 >= window.cols || y2 >= window.rows
+        x1 < window.x    || y1 < window.y ||
+        x2 > window.cols || y2 > window.rows
       end
 
       def valid_input?(ch, from_parent)

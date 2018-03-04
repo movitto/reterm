@@ -21,8 +21,8 @@ module RETerm
           current_cols + child[:cols] :
           current_cols + child.cols
 
-        rows >= window.rows ||
-        cols >= window.cols
+        rows > window.rows ||
+        cols > window.cols
       end
 
       def add_child(h={})
