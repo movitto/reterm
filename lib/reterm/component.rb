@@ -6,7 +6,13 @@ module RETerm
     include LogHelpers
     include KeyBindings
 
-      attr_accessor :window
+      attr_reader :window
+
+      def window=(w)
+        @window = w
+        dispatch(:window_assigned)
+        w
+      end
 
       def initialize(args={})
         self.highlight_focus = args[:highlight_focus] if args.key?(:highlight_focus)
