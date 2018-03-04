@@ -20,6 +20,10 @@ module RETerm
         component.setMessage(t)
       end
 
+      def skip_formatting=(b)
+        component.skip_formatting = b
+      end
+
       def requested_rows
         2
       end
