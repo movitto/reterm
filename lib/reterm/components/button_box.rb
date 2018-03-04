@@ -27,11 +27,11 @@ module RETerm
       end
 
       def requested_rows
-        @widget.requested_rows + 6
+        @widget.requested_rows
       end
 
       def requested_cols
-        [@title.size, total_button_size, @widget.requested_cols].max + 3
+        [@title.size, total_button_size, @widget.requested_cols].max
       end
 
       def close!
