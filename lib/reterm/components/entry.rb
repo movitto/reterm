@@ -17,10 +17,11 @@ module RETerm
       # @option args [Integer] :max max entry length
       def initialize(args={})
         super
-        @title   = args[:title] || ""
-        @label   = args[:label] || ""
-        @min_len = args[:min]   || 0
-        @max_len = args[:max]   || 100
+        @title    = args[:title] || ""
+        @label    = args[:label] || ""
+        @min_len  = args[:min]   || 0
+        @max_len  = args[:max]   || 100
+        @min_size = args[:size]  || 0
       end
 
       def requested_rows
@@ -28,7 +29,7 @@ module RETerm
       end
 
       def requested_cols
-        [@title.size, @label.size].min + 20
+        [@title.size, @label.size, @min_size].max + 3
       end
 
       def value
@@ -49,7 +50,7 @@ module RETerm
                            '.'.ord,                   # filler char
                            disp_type,                 # display type
                            window.cols-@label.size-5, # field width
-                           0, 256,                    # min/max len
+                           0, 512,                    # min/max len
                            false, false)              # box, shadow
         e = self
         callback = lambda do |cdktype, entry, component, key|
