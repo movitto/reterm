@@ -4,6 +4,8 @@ module RETerm
     class Dialog < Component
       include CDKComponent
 
+      attr_reader :buttons
+
       BUTTONS = {
         :ok        => ["</B/24>OK"],
         :ok_cancel => ["</B/24>OK", "</B16>Cancel"]
@@ -25,6 +27,10 @@ module RETerm
         @buttons = BUTTONS[:ok_cancel] if @buttons.empty?
       end
 
+      def selected
+        strip_formatting(buttons[component.current_button])
+      end
+
       # Client may invoke this to
       #   - create dialog and window
       #   - activate it
@@ -35,6 +41,8 @@ module RETerm
         win.component = dlg
         dlg.activate!
         dlg.close!
+        return "" unless dlg.normal_exit?
+        dlg.selected
       end
 
       def requested_rows
