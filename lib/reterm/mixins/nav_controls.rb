@@ -2,7 +2,7 @@ module RETerm
   module NavControls
     # Key which if pressed causes the navigation component
     # to lose focus / become deactivated
-    QUIT_CONTROLS  = [27, 'q'.ord, 'Q'.ord] # 27 = ESC
+    QUIT_CONTROLS  = [27] # 27 = ESC
 
     # Key if pressed focuses on / activates a component
     ENTER_CONTROLS = [10, Ncurses::KEY_ENTER] # 10 = enter , space
@@ -28,22 +28,6 @@ module RETerm
     # Quit when quit-sequence detected or app-shutdown
     def quit_nav?(ch=nil)
       (!ch.nil? && QUIT_CONTROLS.include?(ch) || shutdown? || deactivate?)
-    end
-
-    # Flag indicating that this component should
-    # be deactivated
-    def deactivate?
-      !!(@deactivate ||= false)
-    end
-
-    # Make this component as decativated
-    def deactivate!
-      @deactivate = true
-    end
-
-    # Reset deactivation
-    def reactivate!
-      @deactivate = false
     end
   end # module NavControls
 end # module RETerm

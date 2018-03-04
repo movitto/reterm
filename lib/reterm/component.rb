@@ -69,6 +69,18 @@ module RETerm
       # (when navigating to another component, window closed, etc).
       # Subclasses may override to hide / cleanup resources
       def deactivate!
+        @deactivate = true
+      end
+
+      # Flag indicating that this component should
+      # be deactivated
+      def deactivate?
+        !!(@deactivate ||= false)
+      end
+
+      # Reset deactivation
+      def reactivate!
+        @deactivate = false
       end
 
       attr_writer :highlight_focus
