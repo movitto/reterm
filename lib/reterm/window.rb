@@ -181,6 +181,7 @@ module RETerm
     ###
 
     # Adjusts rows/cols in a context dependent manner
+    # TODO should proporational percentage be of remaining area?
     def self.adjust_proportional(parent, rows, cols)
       nr = rows
       nc = cols
@@ -199,13 +200,26 @@ module RETerm
       nx = 1 if x == :left
       ny = 1 if y == :top
 
-      nx = parent.cols - cols if x == :right
-      ny = parent.rows - rows if y == :bottom
+      nx = parent.cols - cols - 1 if x == :right
+      ny = parent.rows - rows - 1 if y == :bottom
 
       nx = parent.cols / 2 - cols / 2 if x == :center
       ny = parent.rows / 2 - rows / 2 if y == :center
 
       return nx, ny
+    end
+
+    # Adjusts rows / cols so as to fill parent
+    def self.fill_parent(parent, x, y, rows, cols)
+      if (y + rows) < parent.rows
+        rows = parent.rows - y - 1
+      end
+
+      if (x + cols) < parent.cols
+        cols = parent.cols - x - 1
+      end
+
+      return rows, cols
     end
 
     ###

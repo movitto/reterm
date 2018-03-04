@@ -120,20 +120,11 @@ module RETerm
       raise ArgumentError, "must specify rows/cols" unless h.key?(:rows) &&
                                                            h.key?(:cols)
 
-      # TODO should proporational percentage be of remaining area?
       h[:rows], h[:cols] = *Window.adjust_proportional(window, h[:rows], h[:cols])
       h[:x],    h[:y]    = *Window.align(window, h[:x], h[:y], h[:rows], h[:cols])
-
-      if h[:fill]
-        p = parent? ? parent.window : Terminal
-        if (h[:y] + h[:rows]) < p.rows
-          h[:rows] = p.rows-h[:y]-1
-        end
-
-        if (h[:x] + h[:cols]) < p.cols
-          h[:cols] = p.cols-h[:x]-1
-        end
-      end
+      h[:rows], h[:cols] = *Window.fill_parent(parent? ? parent.window : Terminal,
+                                               h[:x], h[:y],
+                                               h[:rows], h[:cols]) if h[:fill]
 
       if exceeds_bounds_with?(h)
         if expandable? # ... && can_expand_to?(h)
@@ -202,6 +193,7 @@ module RETerm
       draw!
       update_reterm
       handle_input(*input)
+      deactivate!
     end
   end # class Layout
 end # module RETerm
