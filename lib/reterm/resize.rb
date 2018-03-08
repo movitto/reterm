@@ -2,6 +2,11 @@ module RETerm
   # Seconds between terminal size syncs
   RESIZE_TIME = 0.2
 
+  # Set the global callback to be invoked on resize
+  def on_resize(&bl)
+    @on_resize = bl
+  end
+
   # Internal helper to track size of terminal.
   # This is a simple mechanism that launches a
   # worker thread to periodically poll terminal size.
@@ -13,7 +18,13 @@ module RETerm
       while @track_resize
         Terminal.reset!
         t = Terminal.dimensions
-        Terminal.resize! if t != d
+
+        if t != d && !shutdown?
+          Terminal.resize!
+          @on_resize.call if !!@on_resize
+        end
+
+        d = Terminal.dimensions
         sleep(RESIZE_TIME)
       end
     }
