@@ -166,11 +166,13 @@ module RETerm
         @win = Ncurses::WINDOW.new(@rows, @cols, @y, @x)
       end
 
+      raise ArgumentError, "could not create window" if !@win
+
       self.component = component if !!component
 
       Ncurses::keypad(@win, true)
 
-      @win.timeout(SYNC_TIMEOUT) if @win && sync_enabled? # XXX
+      @win.timeout(SYNC_TIMEOUT) if sync_enabled? # XXX
 
       @expand      = !!args[:expand]
       @must_expand = !!args[:must_expand]
@@ -321,7 +323,7 @@ module RETerm
       @children.delete(child)
       @@registry.delete(child)
       child.finalize!
-      child.win.delwin
+      child.win.delwin if !!child.win
     end
 
     # Return child containing specified screen coordiantes, else nil
@@ -377,7 +379,7 @@ module RETerm
 
       @win.werase if @win
 
-      component.component.erase if cdk?
+      component.component.erase if cdk? && component? && component.init?
     end
 
     # Erases window screen by overwriting it with blanks

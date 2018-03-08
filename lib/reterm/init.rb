@@ -26,18 +26,19 @@ module RETerm
 
     err = nil
 
+    min = opts[:min_size]
+
     begin
-      Terminal.load # XXX: not sure why but loading terminal
-                    #      info after changing terminal settings via
-                    #      ncurses seems to corrupt the terminal
-                    #      state to the point it cannot be restored
-                    #      without a 'reset' (see below).
-                    #      So just preload terminal info here.
+      # XXX: must load terminal info before changing terminal settings
+      #      (else causes crash... not sure why)
+      # But we also check min dimensions here
+      Terminal.load(min)
 
       # shorten up the esc delay time
       ENV["ESCDELAY"] = 100.to_s
 
       stdscr = Ncurses::initscr
+      initialized = true
       Ncurses::start_color
       Ncurses::noecho
       Ncurses::cbreak
@@ -56,10 +57,10 @@ module RETerm
 
     ensure
       stop_track_resize
-      Ncurses.curs_set(1)
+      Ncurses.curs_set(1) if !!initialized
       Window.top.each { |w| w.finalize! }
       CDK::SCREEN.endCDK if cdk_enabled?
-      Ncurses.endwin
+      Ncurses.endwin if !!initialized
       #`reset -Q` # XXX only way to guarantee a full reset (see above)
     end
 
@@ -95,7 +96,7 @@ module RETerm
       Window.top.each { |w| w.noutrefresh }
     end
 
-    Ncurses::Panel.update_panels
+    #Ncurses::Panel.update_panels
     Ncurses.doupdate
   end
 

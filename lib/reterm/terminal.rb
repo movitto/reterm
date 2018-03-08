@@ -11,8 +11,11 @@ module RETerm
       @dimensions ||= TermInfo.screen_size
     end
 
-    def self.load
+    def self.load(min = nil)
       dimensions
+      raise ArgumentError, "Terminal too Small - min: #{min}" if min &&
+                                                         (cols < min[:cols] ||
+                                                          rows < min[:rows])
       nil
     end
 

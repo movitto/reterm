@@ -20,6 +20,10 @@ module RETerm
       raise "NotImplemented"
     end
 
+    def init?
+      !!@component
+    end
+
     # Return completely initialized CDK component
     def component
       enable_cdk!
