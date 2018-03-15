@@ -36,6 +36,10 @@ module RETerm
         component.getValue
       end
 
+      def value=(v)
+        component.setValue(v)
+      end
+
       private
 
       def disp_type
