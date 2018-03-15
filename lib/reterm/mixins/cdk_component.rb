@@ -69,7 +69,7 @@ module RETerm
 
     # CDK components may be activated
     def activatable?
-      true
+      !defined?(@activatable) || @activatable
     end
 
     # Invoke CDK activation routine

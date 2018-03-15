@@ -21,6 +21,7 @@ module RETerm
       def initialize(args={})
         self.highlight_focus = args[:highlight_focus] if args.key?(:highlight_focus)
         self.activate_focus  = args[:activate_focus]  if args.key?(:activate_focus)
+        self.activatable     = args[:activatable]     if args.key?(:activatable)
         init_cdk(args) if cdk?
       end
 
@@ -53,12 +54,14 @@ module RETerm
         @colors = c
       end
 
+      attr_writer :activatable
+
       # Returns a boolean indicating if the user should be
       # able to focus on and activate the component. By default
       # this is false, but interactive components should override
       # and return true.
       def activatable?
-        false
+        defined?(@activatable) && @activatable
       end
 
       # Actual activation mechanism, invoked by the navigation
