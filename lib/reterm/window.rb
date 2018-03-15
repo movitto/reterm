@@ -95,6 +95,12 @@ module RETerm
       @ty ||= parent? ? (parent.total_y + y) : y
     end
 
+    def distance_from(win)
+      # FIXME: need to expand to compare each of 4 window coords
+      #        to each of 4 in other window
+      Math.sqrt((x - win.x) ** 2 + (y - win.y) ** 2)
+    end
+
     # Instantiate Window with given args. None are required, but
     # unless :rows, :cols, :x, or :y is specified, window will be
     # created in it's default position.

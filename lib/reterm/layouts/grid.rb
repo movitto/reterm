@@ -47,22 +47,24 @@ module RETerm
       def next_focus(ch)
         f = nil
         if     UP_CONTROLS.include?(ch)
-          f = focusable.select { |f| f.window.y < focused.window.y }.first
+          f = focusable.select { |f| f.window.y < focused.window.y }
 
         elsif  DOWN_CONTROLS.include?(ch)
-          f = focusable.select { |f| f.window.y > focused.window.y }.first
+          f = focusable.select { |f| f.window.y > focused.window.y }
 
         elsif  LEFT_CONTROLS.include?(ch)
-          f = focusable.select { |f| f.window.x < focused.window.x }.first
+          f = focusable.select { |f| f.window.x < focused.window.x }
 
         elsif RIGHT_CONTROLS.include?(ch)
-          f = focusable.select { |f| f.window.x > focused.window.x }.first
+          f = focusable.select { |f| f.window.x > focused.window.x }
 
         else
           return super
         end
 
-        focusable.index(f)
+        f.sort! { |a, b| focused.distance_from(a) <=> focused.distance_from(b) }
+
+        focusable.index(f.first)
       end
     end # class Grid
   end # module Layouts

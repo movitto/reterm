@@ -14,6 +14,10 @@ module RETerm
         w
       end
 
+      def distance_from(c)
+        window.distance_from(c.kind_of?(Window) ? c : c.window)
+      end
+
       def initialize(args={})
         self.highlight_focus = args[:highlight_focus] if args.key?(:highlight_focus)
         self.activate_focus  = args[:activate_focus]  if args.key?(:activate_focus)
