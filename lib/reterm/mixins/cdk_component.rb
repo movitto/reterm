@@ -24,6 +24,11 @@ module RETerm
       !!@component
     end
 
+    # Remove CDK formatting from string
+    def strip_formatting(str)
+      str.gsub(/<.*>/, "")
+    end
+
     # Return completely initialized CDK component
     def component
       enable_cdk!
