@@ -203,11 +203,12 @@ module RETerm
         child = child.component
 
         if child.activatable?
+          self.nav_select = child
+
           if self.contains?(child)
             nav_to_selected
 
           else
-            self.nav_select = child
             nav_to_parent
             return nil
           end
