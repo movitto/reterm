@@ -28,7 +28,7 @@ RETerm ships with components that depend on additional gem dependencies. These f
 instantiated. To install all optional RETerm dependencies run:
 
 ```
-  $ gem install artii drawille chunky_png tawny-cdk
+  $ gem install artii drawille chunky_png cdk
 ```
 
 ## Usage
@@ -62,6 +62,8 @@ we are done, reading the user input is a cinch!
 results = {}
 
 init_reterm {
+  ColorPair.register :green, :black, :main
+
   win = Window.new
   win.colors = :main
   win.border!
